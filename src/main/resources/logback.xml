@@ -7,15 +7,16 @@
         </encoder>
     </appender>
     <!-- 全部日志 -->
+<!--
     <appender name="ROLLING" class="ch.qos.logback.core.rolling.RollingFileAppender">
         <file>/data/log/BACnet2XLink.log</file>
-        <!-- 每天滚动 -->
+        &lt;!&ndash; 每天滚动 &ndash;&gt;
         <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
             <fileNamePattern>/data/log/BACnet2XLink.%d{yyyy-MM-dd}.%i.gz</fileNamePattern>
-            <!-- 保存90天 -->
+            &lt;!&ndash; 保存90天 &ndash;&gt;
             <maxHistory>90</maxHistory>
             <timeBasedFileNamingAndTriggeringPolicy class="ch.qos.logback.core.rolling.SizeAndTimeBasedFNATP">
-                <!-- 按日期和文件大小滚动，每个文件100MB -->
+                &lt;!&ndash; 按日期和文件大小滚动，每个文件100MB &ndash;&gt;
                 <maxFileSize>100MB</maxFileSize>
             </timeBasedFileNamingAndTriggeringPolicy>
         </rollingPolicy>
@@ -24,6 +25,7 @@
             <charset>UTF-8</charset>
         </encoder>
     </appender>
+-->
     <root level="INFO">
         <appender-ref ref="STDOUT" />
     </root>

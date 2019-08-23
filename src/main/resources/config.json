@@ -1,0 +1,26 @@
+{
+  "broadcastAddress": "192.168.0.255",
+  "networkPrefix": 24,
+  "device": {
+    "deviceId": 505528,
+    "dataSubmitInterval": 10,
+    "readObjs": [
+      {
+        "objectId": 3000143,
+        "objectType": "analog-value"
+      },
+      {
+        "objectId": 3000147,
+        "objectType": "binary-value"
+      },
+      {
+        "objectId": 3000190,
+        "objectType": "analog-value"
+      },
+      {
+        "objectId": 3000191,
+        "objectType": "multi-state-value"
+      }
+    ]
+  }
+}
