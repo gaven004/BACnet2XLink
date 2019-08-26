@@ -2,6 +2,7 @@ package com.g.bacnet2xlink;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.net.URL;
 import java.nio.charset.StandardCharsets;
 import java.util.List;
 
@@ -42,8 +43,30 @@ public class Configuration {
      * @return 系统配置
      */
     public static Configuration fromResource(String name) throws IOException {
-        try (final InputStream in = Configuration.class.getResourceAsStream(name)) {
+        InputStream in = null;
+
+        try {
+            in = Configuration.class.getResourceAsStream(name);
+        } catch (Exception ignore) {
+        }
+
+        if (in == null) {
+            final String stripped = name.startsWith("/") ? name.substring(1) : null;
+
+            if (in == null) {
+                try {
+                    in = ClassLoader.getSystemResourceAsStream(stripped);
+                } catch (Exception ignore) {
+                }
+            }
+        }
+
+        try {
             return JSON.parseObject(in, StandardCharsets.UTF_8, Configuration.class);
+        } finally {
+            if (in != null) {
+                in.close();
+            }
         }
     }
 

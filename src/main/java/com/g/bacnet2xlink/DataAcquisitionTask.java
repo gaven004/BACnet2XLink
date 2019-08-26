@@ -35,9 +35,9 @@ public class DataAcquisitionTask implements Runnable {
             for (ObjectPropertyReference opr : pvs) {
                 log.info("\t{} = {}", opr.getObjectIdentifier().toString(), pvs.getNoErrorCheck(opr));
             }
-
         } catch (BACnetException e) {
-            // todo: handle exception
+            log.warn("采集上报任务异常，任务退出", e);
+            throw new RuntimeException();
         }
 
         log.info("数据采集上报任务结束");
