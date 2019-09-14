@@ -14,6 +14,16 @@
     </properties>
 
     <dependencies>
+        <dependency>
+            <groupId>cn.xlink</groupId>
+            <artifactId>xlink-iot-sdk</artifactId>
+            <version>3.5.0-pg</version>
+        </dependency>
+        <dependency>
+            <groupId>cn.xlink</groupId>
+            <artifactId>xagent-monitor-sdk</artifactId>
+            <version>1.0.0-beta</version>
+        </dependency>
 
         <dependency>
             <groupId>lohbihler</groupId>
@@ -78,6 +88,14 @@
     </dependencies>
 
     <repositories>
+        <repository>
+            <snapshots>
+                <enabled>true</enabled>
+                <checksumPolicy>fail</checksumPolicy>
+            </snapshots>
+            <id>my-local-repo</id>
+            <url>file://${basedir}/lib</url>
+        </repository>
         <repository>
             <releases>
                 <enabled>false</enabled>
