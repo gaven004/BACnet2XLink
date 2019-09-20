@@ -1,26 +1,173 @@
 {
+  "certId": "5d7a1f2c6fb0bd3fa7566162",
+  "certKey": "77e9fad9-2987-4c93-8170-da775611c437",
+  "deviceEndpoint": "mqtt.xlink.cn:1883",
+  "connectorType": "5764610525098608128",
+  "localDeviceNumber": 1,
   "broadcastAddress": "192.168.0.255",
   "networkPrefix": 24,
-  "device": {
-    "deviceId": 505528,
-    "dataSubmitInterval": 10,
-    "readObjs": [
-      {
-        "objectId": 3000143,
-        "objectType": "analog-value"
-      },
-      {
-        "objectId": 3000147,
-        "objectType": "binary-value"
-      },
-      {
-        "objectId": 3000190,
-        "objectType": "analog-value"
-      },
-      {
-        "objectId": 3000191,
-        "objectType": "multi-state-value"
-      }
-    ]
-  }
+  "remoteDeviceNumber": 505528,
+  "dataSubmitInterval": 60,
+  "products": [
+    {
+      "id": "160042baf43b03e9160042baf43b7801",
+      "name": "风机",
+      "properties": [
+        {
+          "name": "mode",
+          "desc": "模式",
+          "destType": "Integer",
+          "valueSet": [
+            {
+              "value": "inactive",
+              "xvalue": 2,
+              "desc": "手动模式"
+            },
+            {
+              "value": "active",
+              "xvalue": 1,
+              "desc": "自动模式"
+            }
+          ]
+        },
+        {
+          "name": "status",
+          "desc": "运行状态",
+          "destType": "Integer",
+          "valueSet": [
+            {
+              "value": "inactive",
+              "xvalue": 2,
+              "desc": "停止"
+            },
+            {
+              "value": "active",
+              "xvalue": 1,
+              "desc": "运行"
+            }
+          ]
+        },
+        {
+          "name": "trip",
+          "desc": "过载跳闸",
+          "destType": "Integer",
+          "valueSet": [
+            {
+              "value": "inactive",
+              "xvalue": 2,
+              "desc": "正常"
+            },
+            {
+              "value": "active",
+              "xvalue": 1,
+              "desc": "跳闸"
+            }
+          ]
+        },
+        {
+          "name": "running_time",
+          "desc": "累计运行时间（分钟）",
+          "destType": "Float",
+          "valueConverter": ""
+        }
+      ],
+      "events": [
+        {
+          "name": "overload",
+          "type": "alert",
+          "desc": "过载跳闸",
+          "messageSet": [
+            {
+              "value": "inactive",
+              "code": "overload reset",
+              "message": "过载复位"
+            },
+            {
+              "value": "active",
+              "code": "overload tripping",
+              "message": "过载跳闸"
+            }
+          ]
+        }
+      ],
+      "services": [
+        {
+          "name": "start",
+          "desc": "启动",
+          "destParamType": "BinaryPV",
+          "valueSet": [
+            {
+              "dest": "active"
+            }
+          ],
+          "valueConverter": ""
+        },
+        {
+          "name": "stop",
+          "desc": "停止",
+          "destParamType": "BinaryPV",
+          "valueSet": [
+            {
+              "dest": "inactive"
+            }
+          ],
+          "valueConverter": ""
+        }
+      ],
+      "devices": [
+        {
+          "mac": "500200",
+          "properties": [
+            {
+              "name": "mode",
+              "desc": "模式",
+              "objectId": 3000229,
+              "objectType": "binary-input"
+            },
+            {
+              "name": "status",
+              "desc": "运行状态",
+              "objectId": 3000227,
+              "objectType": "binary-input"
+            },
+            {
+              "name": "trip",
+              "desc": "过载跳闸",
+              "objectId": 3000228,
+              "objectType": "binary-input"
+            },
+            {
+              "name": "running_time",
+              "desc": "累计运行时间（分钟）",
+              "objectId": 3000238,
+              "objectType": "analog-value"
+            }
+          ],
+          "events": [
+            {
+              "name": "overload",
+              "desc": "过载跳闸",
+              "objectId": 3000228,
+              "objectType": "binary-input",
+              "covProperty": "present-value"
+            }
+          ],
+          "services": [
+            {
+              "name": "start",
+              "desc": "启动",
+              "objectId": 3000234,
+              "objectType": "binary-input"
+            },
+            {
+              "name": "stop",
+              "desc": "停止",
+              "objectId": 3000234,
+              "objectType": "binary-input"
+            }
+          ]
+        }
+      ]
+    }
+  ]
 }
