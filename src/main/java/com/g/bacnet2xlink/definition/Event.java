@@ -1,6 +1,7 @@
-package com.g.bacnet2xlink;
+package com.g.bacnet2xlink.definition;
 
 import java.util.List;
+import java.util.Map;
 
 import lombok.Data;
 
@@ -26,4 +27,10 @@ public class Event {
     private String covProperty;
 
     private List<EventMessage> messageSet;
+
+    private Map<String, EventMessage> messageMap;
+
+    public EventMessage getMessage(String key) {
+        return messageMap.get(key);
+    }
 }

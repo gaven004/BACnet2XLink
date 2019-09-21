@@ -1,4 +1,4 @@
-package com.g.bacnet2xlink;
+package com.g.bacnet2xlink.definition;
 
 import com.serotonin.bacnet4j.type.Encodable;
 import lombok.Data;

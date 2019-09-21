@@ -1,5 +1,8 @@
 package com.g.bacnet4j;
 
+import java.util.List;
+import java.util.Random;
+
 import com.serotonin.bacnet4j.LocalDevice;
 import com.serotonin.bacnet4j.RemoteDevice;
 import com.serotonin.bacnet4j.exception.BACnetException;
@@ -26,9 +29,6 @@ import org.junit.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.util.List;
-import java.util.Random;
-
 public class MyTest {
     static final Logger LOG = LoggerFactory.getLogger(MyTest.class);
 
@@ -42,7 +42,7 @@ public class MyTest {
         builder = new IpNetworkBuilder();
         builder.withBroadcast("192.168.0.255", 24);
         network = builder.build();
-        localDevice = new LocalDevice(1, new DefaultTransport(network));
+        localDevice = new LocalDevice(ObjectIdentifier.UNINITIALIZED, new DefaultTransport(network));
 
         try {
             LOG.info("Start initialize localDevice");
@@ -66,6 +66,7 @@ public class MyTest {
     }
 
     @Test
+    @Ignore
     public void writeAnalogValue() {
         LOG.info("");
         LOG.info("Write Analog Value Test");
@@ -81,11 +82,12 @@ public class MyTest {
             LOG.info("Object after write");
             printObject(oid);
         } catch (BACnetException e) {
-            LOG.warn(String.format("Unable to write analog value to %s", oid) , e);
+            LOG.warn(String.format("Unable to write analog value to %s", oid), e);
         }
     }
 
     @Test
+    @Ignore
     public void writeBinaryValue() {
         LOG.info("");
         LOG.info("Write Binary Value Test");
@@ -106,7 +108,7 @@ public class MyTest {
             LOG.info("Object after write");
             printObject(oid);
         } catch (BACnetException e) {
-            LOG.warn(String.format("Unable to write analog value to %s", oid) , e);
+            LOG.warn(String.format("Unable to write analog value to %s", oid), e);
         }
     }
 
@@ -151,10 +153,13 @@ public class MyTest {
     }
 
     private void printObject(ObjectIdentifier oid) throws BACnetException {
+
+
         PropertyReferences refs = new PropertyReferences();
 //            refs.add(oid, PropertyIdentifier.all); // 设备的属性，并不一定在BACnet4j有定义，所以只读取规范中必需的属性
         refs.add(oid, PropertyIdentifier.required);
-//        refs.add(oid, PropertyIdentifier.optional);
+        if (!oid.getObjectType().equals(ObjectType.program))
+            refs.add(oid, PropertyIdentifier.optional);
 //        addPropertyReferences(oid, refs);
         PropertyValues pvs = RequestUtils.readProperties(localDevice, remoteDevice, refs, true, null);
 

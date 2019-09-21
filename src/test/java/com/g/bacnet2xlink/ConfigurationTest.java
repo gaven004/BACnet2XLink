@@ -1,12 +1,11 @@
 package com.g.bacnet2xlink;
 
 import java.io.IOException;
-import java.io.InputStream;
-import java.nio.charset.StandardCharsets;
 
-import com.alibaba.fastjson.JSON;
 import org.junit.Ignore;
 import org.junit.Test;
+
+import com.g.bacnet2xlink.definition.Configuration;
 
 
 public class ConfigurationTest {
@@ -22,8 +21,8 @@ public class ConfigurationTest {
 
     @Test
     public void fromFile() {
-        try (final InputStream in = this.getClass().getResourceAsStream("/config.json")) {
-            Configuration cfg = JSON.parseObject(in, StandardCharsets.UTF_8, Configuration.class);
+        try {
+            Configuration cfg = Configuration.fromResource("/config.json");
             System.out.println(cfg);
         } catch (IOException e) {
             e.printStackTrace();
