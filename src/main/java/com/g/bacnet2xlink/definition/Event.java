@@ -5,6 +5,8 @@ import java.util.Map;
 
 import lombok.Data;
 
+import com.g.bacnet2xlink.exception.UnknownEventMessage;
+
 /**
  * 设备事件
  * <p>
@@ -30,7 +32,12 @@ public class Event {
 
     private Map<String, EventMessage> messageMap;
 
-    public EventMessage getMessage(String key) {
-        return messageMap.get(key);
+    public EventMessage getMessage(String key) throws UnknownEventMessage {
+        final EventMessage eventMessage = messageMap.get(key);
+        if (eventMessage != null) {
+            return eventMessage;
+        }
+
+        throw new UnknownEventMessage();
     }
 }

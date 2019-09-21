@@ -6,6 +6,8 @@ import java.util.concurrent.ConcurrentHashMap;
 
 import com.serotonin.bacnet4j.type.primitive.ObjectIdentifier;
 
+import com.g.bacnet2xlink.exception.UnknownDevice;
+
 public class Context {
     /**
      * 在应用初始化、云平台登录后，保存所有正常的设备
@@ -43,8 +45,13 @@ public class Context {
      * @param xDeviceId 云平台登录后返回的设备ID
      * @return
      */
-    public Device getDevice(int xDeviceId) {
-        return deviceMap.get(xDeviceId);
+    public Device getDevice(int xDeviceId) throws UnknownDevice {
+        final Device device = deviceMap.get(xDeviceId);
+        if (device != null) {
+            return device;
+        }
+
+        throw new UnknownDevice();
     }
 
     /**
@@ -69,7 +76,12 @@ public class Context {
      * @param oid 对象ID
      * @return
      */
-    public Device getMonitoredDevice(ObjectIdentifier oid) {
-        return monitoredDeviceMap.get(oid);
+    public Device getMonitoredDevice(ObjectIdentifier oid) throws UnknownDevice {
+        final Device device = monitoredDeviceMap.get(oid);
+        if (device != null) {
+            return device;
+        }
+
+        throw new UnknownDevice();
     }
 }

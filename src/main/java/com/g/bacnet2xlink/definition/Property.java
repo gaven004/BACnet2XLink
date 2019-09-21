@@ -5,6 +5,8 @@ import java.util.Map;
 
 import lombok.Data;
 
+import com.g.bacnet2xlink.exception.UnknownValue;
+
 /**
  * 设备属性
  * <p>
@@ -29,19 +31,31 @@ public class Property {
 
     /**
      * 根据物理设备值，查对应的值定义
+     *
      * @param key 物理设备值的String表示
      * @return
      */
-    public Value getValue(String key) {
-        return valueMap.get(key);
+    public Value getValue(String key) throws UnknownValue {
+        final Value value = valueMap.get(key);
+        if (value != null) {
+            return value;
+        }
+
+        throw new UnknownValue();
     }
 
     /**
      * 根据云平台属性值，查对应的值定义
+     *
      * @param key
      * @return
      */
-    public Value getValueX(Object key) {
-        return xValueMap.get(key);
+    public Value getValueX(Object key) throws UnknownValue {
+        final Value value = xValueMap.get(key);
+        if (value != null) {
+            return value;
+        }
+
+        throw new UnknownValue();
     }
 }

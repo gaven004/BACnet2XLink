@@ -5,6 +5,8 @@ import java.util.Map;
 
 import lombok.Data;
 
+import com.g.bacnet2xlink.exception.UnknownValue;
+
 /**
  * 设备服务
  * <p>
@@ -32,8 +34,13 @@ public class Service {
      * @param key
      * @return
      */
-    public ServiceParamValue getValueX(List<Object> key) {
-        return xValueMap.get(key.toString());
+    public ServiceParamValue getValueX(List<Object> key) throws UnknownValue {
+        final ServiceParamValue value = xValueMap.get(key.toString());
+        if (value != null) {
+            return value;
+        }
+
+        throw new UnknownValue();
     }
 
 }
