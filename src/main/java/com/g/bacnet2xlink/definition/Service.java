@@ -1,12 +1,13 @@
 package com.g.bacnet2xlink.definition;
 
 import java.util.List;
+import java.util.Map;
 
 import lombok.Data;
 
 /**
  * 设备服务
- *
+ * <p>
  * 云平台调用服务，操作具体的物理设备
  */
 @Data
@@ -22,4 +23,17 @@ public class Service {
 
     private int objectId;
     private String objectType;
+
+    private Map<String, ServiceParamValue> xValueMap;
+
+    /**
+     * 根据云平台参数值，查对应的值定义
+     *
+     * @param key
+     * @return
+     */
+    public ServiceParamValue getValueX(List<Object> key) {
+        return xValueMap.get(key.toString());
+    }
+
 }

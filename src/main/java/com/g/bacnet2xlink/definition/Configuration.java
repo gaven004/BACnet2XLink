@@ -122,6 +122,22 @@ public class Configuration {
                 }
             }
 
+            for (Service service : product.getServices()) {
+                if (service.getValueSet() != null) {
+                    Map<String, ServiceParamValue> xValueMap = new HashMap<>();
+
+                    for (ServiceParamValue value : service.getValueSet()) {
+                        if (value.getScr() != null) {
+                            xValueMap.put(value.getScr().toString(), value);
+                        } else {
+                            xValueMap.put("*", value);
+                        }
+                    }
+
+                    service.setXValueMap(xValueMap);
+                }
+            }
+
             // 根据产品定义，对每一设备设备属性、事件、服务的细项内容
             for (Device device : product.getDevices()) {
                 for (Property dest : device.getProperties()) {
@@ -165,6 +181,7 @@ public class Configuration {
                             }
                             if (src.getValueSet() != null) {
                                 dest.setValueSet(src.getValueSet());
+                                dest.setXValueMap(src.getXValueMap());
                             }
                             if (src.getValueConverter() != null && src.getValueConverter().trim().length() > 0) {
                                 dest.setValueConverter(src.getValueConverter());
