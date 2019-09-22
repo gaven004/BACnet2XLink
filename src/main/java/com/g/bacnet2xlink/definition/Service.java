@@ -3,6 +3,7 @@ package com.g.bacnet2xlink.definition;
 import java.util.List;
 import java.util.Map;
 
+import com.serotonin.bacnet4j.type.primitive.ObjectIdentifier;
 import lombok.Data;
 
 import com.g.bacnet2xlink.exception.UnknownValue;
@@ -17,14 +18,15 @@ public class Service {
     private String name;
     private String desc;
 
-    private List<ServiceParam> srcParam;
-    private String destParamType;
+    private List<ServiceParam> srcParam; // 云平台入参定义，多个，
+    private String destParamType; // 对物理设备的属性的值的类型定义
 
-    private List<ServiceParamValue> valueSet;
+    private List<ServiceParamValue> valueSet; // 云平台入参值（多个） 到 物理设备属性值（一个） 的映射对
     private String valueConverter;
 
     private int objectId;
     private String objectType;
+    private ObjectIdentifier oid;
 
     private Map<String, ServiceParamValue> xValueMap;
 
@@ -35,7 +37,7 @@ public class Service {
      * @return
      */
     public ServiceParamValue getValueX(List<Object> key) throws UnknownValue {
-        final ServiceParamValue value = xValueMap.get(key.toString());
+        ServiceParamValue value = (key == null ? xValueMap.get(ServiceParamValue.NULL_SCR_KEY) : xValueMap.get(key.toString()));
         if (value != null) {
             return value;
         }

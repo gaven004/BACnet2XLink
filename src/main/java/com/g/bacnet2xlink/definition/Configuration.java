@@ -3,6 +3,7 @@ package com.g.bacnet2xlink.definition;
 import java.io.IOException;
 import java.io.InputStream;
 import java.nio.charset.StandardCharsets;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -130,7 +131,7 @@ public class Configuration {
                         if (value.getScr() != null) {
                             xValueMap.put(value.getScr().toString(), value);
                         } else {
-                            xValueMap.put("*", value);
+                            xValueMap.put(ServiceParamValue.NULL_SCR_KEY, value);
                         }
                     }
 
@@ -140,6 +141,8 @@ public class Configuration {
 
             // 根据产品定义，对每一设备设备属性、事件、服务的细项内容
             for (Device device : product.getDevices()) {
+                device.setProductId(product.getId());
+
                 for (Property dest : device.getProperties()) {
                     for (Property src : product.getProperties()) {
                         if (dest.getName().equals(src.getName())) {
@@ -171,6 +174,7 @@ public class Configuration {
                 }
 
                 for (Service dest : device.getServices()) {
+                    dest.setOid(new ObjectIdentifier(ObjectType.forName(dest.getObjectType()), dest.getObjectId()));
                     for (Service src : product.getServices()) {
                         if (dest.getName().equals(src.getName())) {
                             if (src.getSrcParam() != null) {
@@ -191,14 +195,16 @@ public class Configuration {
                     }
                 }
 
+                List<ObjectIdentifier> oids = new ArrayList<>();
                 Map<ObjectIdentifier, Property> propertyMap = new HashMap<>();
                 Map<String, Property> xPropertyMap = new HashMap<>();
                 for (Property property : device.getProperties()) {
-                    propertyMap.put(
-                            new ObjectIdentifier(ObjectType.forName(property.getObjectType()), property.getObjectId()),
-                            property);
+                    ObjectIdentifier oid = new ObjectIdentifier(ObjectType.forName(property.getObjectType()), property.getObjectId());
+                    oids.add(oid);
+                    propertyMap.put(oid, property);
                     xPropertyMap.put(property.getName(), property);
                 }
+                device.setOids(oids);
                 device.setPropertyMap(propertyMap);
                 device.setXPropertyMap(xPropertyMap);
 
