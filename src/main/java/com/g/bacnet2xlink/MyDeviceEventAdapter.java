@@ -1,7 +1,5 @@
 package com.g.bacnet2xlink;
 
-import java.util.HashSet;
-
 import com.serotonin.bacnet4j.event.DeviceEventAdapter;
 import com.serotonin.bacnet4j.type.constructed.Choice;
 import com.serotonin.bacnet4j.type.constructed.PropertyValue;
@@ -22,8 +20,13 @@ import org.slf4j.LoggerFactory;
 public class MyDeviceEventAdapter extends DeviceEventAdapter {
     private static final Logger log = LoggerFactory.getLogger(MyDeviceEventAdapter.class);
 
-    private ObjectIdentifier remoteDeviceIdentifier;
-    private HashSet<ObjectIdentifier> monitorOids;
+    private Configuration cfg;
+    private Context context;
+
+    public MyDeviceEventAdapter(Configuration cfg, Context context) {
+        this.cfg = cfg;
+        this.context = context;
+    }
 
     @Override
     public void listenerException(final Throwable e) {
@@ -32,22 +35,29 @@ public class MyDeviceEventAdapter extends DeviceEventAdapter {
 
     @Override
     public void covNotificationReceived(final UnsignedInteger subscriberProcessIdentifier,
-                                        final ObjectIdentifier initiatingDeviceIdentifier, final ObjectIdentifier monitoredObjectIdentifier,
-                                        final UnsignedInteger timeRemaining, final SequenceOf<PropertyValue> listOfValues) {
-        if (initiatingDeviceIdentifier.equals(remoteDeviceIdentifier) && monitorOids.contains(monitoredObjectIdentifier)) {
-            log.info("CovNotificationReceived: initiatingDeviceIdentifier - {}, monitoredObjectIdentifier - {}",
-                    initiatingDeviceIdentifier, monitoredObjectIdentifier);
-            log.info("\ttimeRemaining - {}", timeRemaining);
-            log.info("\tlistOfValues - {}", listOfValues);
-        }
+                                        final ObjectIdentifier initiatingDeviceIdentifier,
+                                        final ObjectIdentifier monitoredObjectIdentifier,
+                                        final UnsignedInteger timeRemaining,
+                                        final SequenceOf<PropertyValue> listOfValues) {
+        log.info("CovNotificationReceived: initiatingDeviceIdentifier - {}, monitoredObjectIdentifier - {}",
+                initiatingDeviceIdentifier, monitoredObjectIdentifier);
+        log.info("\ttimeRemaining - {}", timeRemaining);
+        log.info("\tlistOfValues - {}", listOfValues);
     }
 
     @Override
     public void eventNotificationReceived(final UnsignedInteger processIdentifier,
-                                          final ObjectIdentifier initiatingDeviceIdentifier, final ObjectIdentifier eventObjectIdentifier,
-                                          final TimeStamp timeStamp, final UnsignedInteger notificationClass, final UnsignedInteger priority,
-                                          final EventType eventType, final CharacterString messageText, final NotifyType notifyType,
-                                          final Boolean ackRequired, final EventState fromState, final EventState toState,
+                                          final ObjectIdentifier initiatingDeviceIdentifier,
+                                          final ObjectIdentifier eventObjectIdentifier,
+                                          final TimeStamp timeStamp,
+                                          final UnsignedInteger notificationClass,
+                                          final UnsignedInteger priority,
+                                          final EventType eventType,
+                                          final CharacterString messageText,
+                                          final NotifyType notifyType,
+                                          final Boolean ackRequired,
+                                          final EventState fromState,
+                                          final EventState toState,
                                           final NotificationParameters eventValues) {
         log.info("EventNotificationReceived：{}", messageText);
         log.info("\tinitiatingDeviceIdentifier：{}", initiatingDeviceIdentifier);

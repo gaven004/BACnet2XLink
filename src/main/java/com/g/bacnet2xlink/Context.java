@@ -1,4 +1,4 @@
-package com.g.bacnet2xlink.definition;
+package com.g.bacnet2xlink;
 
 import java.util.Collection;
 import java.util.Map;
@@ -7,6 +7,7 @@ import java.util.concurrent.ConcurrentHashMap;
 import cn.xlink.iot.sdk.mqtt.client.cm.XlinkCmMqttClient;
 import com.serotonin.bacnet4j.type.primitive.ObjectIdentifier;
 
+import com.g.bacnet2xlink.definition.Device;
 import com.g.bacnet2xlink.exception.UnknownDevice;
 
 public class Context {

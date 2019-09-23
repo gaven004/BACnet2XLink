@@ -4,6 +4,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.ScheduledFuture;
 import java.util.concurrent.TimeUnit;
 
 import cn.xlink.iot.sdk.XlinkMqttBuilderParams;
@@ -17,12 +18,17 @@ import com.serotonin.bacnet4j.event.DeviceEventAdapter;
 import com.serotonin.bacnet4j.exception.BACnetException;
 import com.serotonin.bacnet4j.npdu.ip.IpNetwork;
 import com.serotonin.bacnet4j.npdu.ip.IpNetworkBuilder;
+import com.serotonin.bacnet4j.service.confirmed.SubscribeCOVPropertyRequest;
 import com.serotonin.bacnet4j.transport.DefaultTransport;
 import com.serotonin.bacnet4j.type.Encodable;
 import com.serotonin.bacnet4j.type.constructed.ObjectPropertyReference;
+import com.serotonin.bacnet4j.type.constructed.PropertyReference;
 import com.serotonin.bacnet4j.type.enumerated.BinaryPV;
+import com.serotonin.bacnet4j.type.enumerated.ObjectType;
 import com.serotonin.bacnet4j.type.enumerated.PropertyIdentifier;
+import com.serotonin.bacnet4j.type.primitive.Boolean;
 import com.serotonin.bacnet4j.type.primitive.ObjectIdentifier;
+import com.serotonin.bacnet4j.type.primitive.Real;
 import com.serotonin.bacnet4j.type.primitive.UnsignedInteger;
 import com.serotonin.bacnet4j.util.PropertyReferences;
 import com.serotonin.bacnet4j.util.PropertyValues;
@@ -33,7 +39,10 @@ import org.slf4j.LoggerFactory;
 import xlink.cm.message.DeviceLoginResultMessage;
 import xlink.cm.message.type.DeviceLoginRetCodeType;
 
-import com.g.bacnet2xlink.definition.*;
+import com.g.bacnet2xlink.definition.Device;
+import com.g.bacnet2xlink.definition.Event;
+import com.g.bacnet2xlink.definition.Product;
+import com.g.bacnet2xlink.definition.Service;
 import com.g.bacnet2xlink.exception.UnknownDevice;
 import com.g.bacnet2xlink.exception.UnknownProperty;
 import com.g.bacnet2xlink.exception.UnknownService;
@@ -74,7 +83,7 @@ public class Main {
         me.addShutdownHook();
 
         // 运行任务
-//        me.runTask();
+        me.runTask();
 
         me.setAttributeCallback();
         me.getAttributeCallback();
@@ -227,37 +236,14 @@ public class Main {
                 int deviceId = request.getDeviceId();
 
                 //构建应答的信息属性
-                Map<String, Object> attributes = null;
+                Map<String, Object> attributes = new HashMap<>();
                 //构建应答码
                 String code = null;
 
                 try {
                     Device device = context.getDevice(deviceId);
-
-                    log.info("读取对象数值：");
-                    PropertyValues pvs = RequestUtils.readOidPresentValues(localDevice, remoteDevice, device.getOids(), null);
-                    attributes = new HashMap<>();
-                    for (ObjectPropertyReference opr : pvs) {
-                        log.info("\t{} = {}", opr.getObjectIdentifier().toString(), pvs.get(opr));
-                        Property property = device.getProperty(opr.getObjectIdentifier());
-                        Object value = null;
-                        if (property.getValueConverter() != null && property.getValueConverter().trim().length() > 0) {
-
-                        } else if (property.getValueSet() != null && property.getValueSet().size() > 0) {
-                            value = property.getValueX(pvs.get(opr).toString());
-                        } else {
-                            String type = property.getDestType();
-                            if (type.equals("Integer")) {
-                                value = Integer.parseInt(pvs.get(opr).toString());
-                            } else if (type.equals("Float")) {
-                                value = Float.parseFloat(pvs.get(opr).toString());
-                            } else {
-                                value = pvs.get(opr).toString();
-                            }
-                        }
-                        attributes.put(property.getName(), value);
-                    }
-
+                    log.info("读取设备[{}]数值：", device.getMac());
+                    DataAcquisitionHelper.readPresentValues(localDevice, remoteDevice, device, attributes, log);
                     code = "200";
                 } catch (UnknownDevice unknown) {
                     log.warn(unknown.getMessage());
@@ -375,7 +361,7 @@ public class Main {
             network = builder.build();
             localDevice = new LocalDevice(deviceNumber, new DefaultTransport(network));
             localDevice.initialize();
-            final DeviceEventAdapter listener = new MyDeviceEventAdapter();
+            final DeviceEventAdapter listener = new MyDeviceEventAdapter(cfg, context);
             localDevice.getEventHandler().addListener(listener);
             log.info("初始化localDevice成功：{}", localDevice);
         } catch (Exception e) {
@@ -415,23 +401,20 @@ public class Main {
             initThreadPool();
 
             // 启动COV订阅线程
-//            SubscribeCOVTask sct = new SubscribeCOVTask(localDevice, remoteDevice, readOids,
-//                    new UnsignedInteger(subscriberLifetime * 2));
-//            final ScheduledFuture<?> scf = executor.scheduleAtFixedRate(sct, 0, subscriberLifetime, TimeUnit.SECONDS);
-
-            // 启动监听线程，接收控制指令
+            SubscribeCOVTask sct = new SubscribeCOVTask(localDevice, remoteDevice, cfg, new UnsignedInteger(subscriberLifetime * 2));
+            final ScheduledFuture<?> scf = executor.scheduleAtFixedRate(sct, 0, subscriberLifetime, TimeUnit.SECONDS);
 
             // 启动上报线程，采集并上报数据
-//            DataAcquisitionTask dat = new DataAcquisitionTask(localDevice, remoteDevice, readOids, xlinkMqttClient, xlinkDeviceId);
-//            final ScheduledFuture<?> daf = executor.scheduleWithFixedDelay(dat,
-//                    cfg.getDevice().getDataSubmitInterval(), cfg.getDevice().getDataSubmitInterval(), TimeUnit.SECONDS);
-//
-//            while (!daf.isDone() && !daf.isCancelled()) {
-//                try {
-//                    Thread.sleep(60000);
-//                } catch (InterruptedException e) {
-//                }
-//            }
+            DataAcquisitionTask dat = new DataAcquisitionTask(localDevice, remoteDevice, cfg, context);
+            final ScheduledFuture<?> daf = executor.scheduleAtFixedRate(dat,
+                    cfg.getDataSubmitInterval(), cfg.getDataSubmitInterval(), TimeUnit.SECONDS);
+
+            while (!daf.isDone() && !daf.isCancelled()) {
+                try {
+                    Thread.sleep(60000);
+                } catch (InterruptedException e) {
+                }
+            }
 
             // 任务中有异常抛出，则任务结束，重新初始化设备，并运行任务
             renew();
@@ -470,16 +453,24 @@ public class Main {
         if (localDevice != null) {
             UnsignedInteger subscriberProcessIdentifier = new UnsignedInteger(localDevice.getInstanceNumber());
 
-
-//        for (ObjectIdentifier oid : readOids) {
-//            try {
-//                SubscribeCOVPropertyRequest req = new SubscribeCOVPropertyRequest(subscriberProcessIdentifier,
-//                        oid, null, null, new PropertyReference(PropertyIdentifier.statusFlags), null);
-//                localDevice.send(remoteDevice, req).get();
-//            } catch (BACnetException e) {
-//                log.warn("取消COV订阅异常，oid={}, exception={}", oid, e.getMessage());
-//            }
-//        }
+            for (Product product : cfg.getProducts()) {
+                for (Device device : product.getDevices()) {
+                    for (Event event : device.getEvents()) {
+                        log.info("取消订阅设备[mac: {}]对象[{} {}]属性[{}]的COV事件", device.getMac(), event.getObjectType(),
+                                event.getObjectId(), event.getCovProperty());
+                        try {
+                            ObjectIdentifier oid = new ObjectIdentifier(ObjectType.forName(event.getObjectType()),
+                                    event.getObjectId());
+                            PropertyReference pr = new PropertyReference(PropertyIdentifier.forName(event.getCovProperty()));
+                            SubscribeCOVPropertyRequest req = new SubscribeCOVPropertyRequest(subscriberProcessIdentifier,
+                                    oid, null, null, pr, null);
+                            localDevice.send(remoteDevice, req).get();
+                        } catch (BACnetException e) {
+                            log.warn("取消COV订阅异常", e);
+                        }
+                    }
+                }
+            }
         }
 
         log.info("取消COV订阅任务结束");

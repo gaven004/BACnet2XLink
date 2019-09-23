@@ -1,4 +1,4 @@
-package com.g.bacnet2xlink.definition;
+package com.g.bacnet2xlink;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -14,6 +14,8 @@ import com.serotonin.bacnet4j.type.primitive.ObjectIdentifier;
 import lombok.Data;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import com.g.bacnet2xlink.definition.*;
 
 @Data
 public class Configuration {

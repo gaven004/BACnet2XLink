@@ -5,8 +5,6 @@ import java.io.IOException;
 import org.junit.Ignore;
 import org.junit.Test;
 
-import com.g.bacnet2xlink.definition.Configuration;
-
 
 public class ConfigurationTest {
     @Test
