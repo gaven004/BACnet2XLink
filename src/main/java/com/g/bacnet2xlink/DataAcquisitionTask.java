@@ -55,7 +55,7 @@ public class DataAcquisitionTask implements Runnable {
                     log.warn("采集上报任务异常，任务退出", e);
                     throw new RuntimeException();
                 } catch (Exception e) {
-                    log.warn("读物理设备属性错误", e);
+                    log.warn("上报任务错误", e);
                 }
             }
         }

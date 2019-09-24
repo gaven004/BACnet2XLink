@@ -351,29 +351,39 @@ public class Main {
         IpNetworkBuilder builder;
         IpNetwork network;
         int deviceNumber = ObjectIdentifier.UNINITIALIZED;
-        try {
-            log.info("初始化localDevice...");
-            if (cfg.getLocalDeviceNumber() != null) {
-                deviceNumber = cfg.getLocalDeviceNumber();
+
+        while (localDevice == null) {
+            try {
+                log.info("初始化localDevice...");
+                if (cfg.getLocalDeviceNumber() != null) {
+                    deviceNumber = cfg.getLocalDeviceNumber();
+                }
+                builder = new IpNetworkBuilder();
+                if (StringUtils.isNotBlank(cfg.getLocalAddress())) {
+                    builder.withLocalBindAddress(cfg.getLocalAddress());
+                }
+                if (cfg.getLocalPort() != null && cfg.getLocalPort() != 0) {
+                    builder.withPort(cfg.getLocalPort());
+                }
+                builder.withBroadcast(cfg.getBroadcastAddress(), cfg.getNetworkPrefix());
+                network = builder.build();
+                localDevice = new LocalDevice(deviceNumber, new DefaultTransport(network));
+                localDevice.initialize();
+                final DeviceEventAdapter listener = new MyDeviceEventAdapter(cfg, context);
+                localDevice.getEventHandler().addListener(listener);
+                log.info("初始化localDevice成功：{}", localDevice);
+            } catch (Exception e) {
+                log.error("初始化localDevice失败", e);
+                log.error("1分钟后重试");
+                if (localDevice != null) {
+                    localDevice.terminate();
+                    localDevice = null;
+                }
+                try {
+                    Thread.sleep(60000);
+                } catch (InterruptedException ex) {
+                }
             }
-            builder = new IpNetworkBuilder();
-            if (StringUtils.isNotBlank(cfg.getLocalAddress())) {
-                builder.withLocalBindAddress(cfg.getLocalAddress());
-            }
-            if (cfg.getLocalPort() != null && cfg.getLocalPort() != 0) {
-                builder.withPort(cfg.getLocalPort());
-            }
-            builder.withBroadcast(cfg.getBroadcastAddress(), cfg.getNetworkPrefix());
-            network = builder.build();
-            localDevice = new LocalDevice(deviceNumber, new DefaultTransport(network));
-            localDevice.initialize();
-            final DeviceEventAdapter listener = new MyDeviceEventAdapter(cfg, context);
-            localDevice.getEventHandler().addListener(listener);
-            log.info("初始化localDevice成功：{}", localDevice);
-        } catch (Exception e) {
-            log.error("初始化localDevice失败", e);
-            log.error("退出系统！！！");
-            System.exit(1);
         }
     }
 
@@ -388,6 +398,7 @@ public class Main {
                 log.error("连接remoteDevice失败", e);
                 log.error("清空localDevice缓存，1分钟后重试");
                 localDevice.clearRemoteDevices();
+                remoteDevice = null;
                 try {
                     Thread.sleep(60000);
                 } catch (InterruptedException ex) {
@@ -409,7 +420,7 @@ public class Main {
 
             // 启动上报线程，采集并上报数据
             DataAcquisitionTask dat = new DataAcquisitionTask(localDevice, remoteDevice, cfg, context);
-            final ScheduledFuture<?> daf = executor.scheduleAtFixedRate(dat,
+            final ScheduledFuture<?> daf = executor.scheduleWithFixedDelay(dat,
                     cfg.getDataSubmitInterval(), cfg.getDataSubmitInterval(), TimeUnit.SECONDS);
 
             while (!daf.isDone() && !daf.isCancelled()) {

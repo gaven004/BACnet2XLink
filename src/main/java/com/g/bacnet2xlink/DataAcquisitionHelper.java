@@ -23,7 +23,7 @@ public class DataAcquisitionHelper {
             if (property.getValueConverter() != null && property.getValueConverter().trim().length() > 0) {
 
             } else if (property.getValueSet() != null && property.getValueSet().size() > 0) {
-                value = property.getValueX(pvs.get(opr).toString());
+                value = property.getValue(pvs.get(opr).toString());
             } else {
                 String type = property.getDestType();
                 if (type.equals("Integer")) {
