@@ -6,6 +6,7 @@ import java.util.Map;
 import com.serotonin.bacnet4j.type.primitive.ObjectIdentifier;
 import lombok.Data;
 
+import com.g.bacnet2xlink.exception.UnknownEvent;
 import com.g.bacnet2xlink.exception.UnknownProperty;
 import com.g.bacnet2xlink.exception.UnknownService;
 
@@ -34,6 +35,8 @@ public class Device {
     private Map<String, Property> xPropertyMap;
 
     private Map<String, Service> xServiceMap;
+
+    private Map<ObjectIdentifier, Event> eventMap;
 
     /**
      * 根据云平台的属性，查对应物理设备的对象
@@ -78,5 +81,20 @@ public class Device {
         }
 
         throw new UnknownService();
+    }
+
+    /**
+     * 根据物理设备的对象ID，查对应对象定义
+     *
+     * @param oid 物理设备的对象ID
+     * @return
+     */
+    public Event getEvent(ObjectIdentifier oid) throws UnknownEvent {
+        final Event event = eventMap.get(oid);
+        if (event != null) {
+            return event;
+        }
+
+        throw new UnknownEvent();
     }
 }

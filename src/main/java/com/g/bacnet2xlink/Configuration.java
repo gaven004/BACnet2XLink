@@ -10,6 +10,7 @@ import java.util.Map;
 
 import com.alibaba.fastjson.JSON;
 import com.serotonin.bacnet4j.type.enumerated.ObjectType;
+import com.serotonin.bacnet4j.type.enumerated.PropertyIdentifier;
 import com.serotonin.bacnet4j.type.primitive.ObjectIdentifier;
 import lombok.Data;
 import org.slf4j.Logger;
@@ -28,6 +29,8 @@ public class Configuration {
     private String certKey; // 授权证书密钥（CKEY）
     private String deviceEndpoint; // 云端CM服务器地址
     private String connectorType; // 连接器类型，用于标识连接器类别
+
+    private int version; // 物模型的版本号
 
     /**
      * 物理设备参数
@@ -146,6 +149,7 @@ public class Configuration {
                 device.setProductId(product.getId());
 
                 for (Property dest : device.getProperties()) {
+                    dest.setOid(new ObjectIdentifier(ObjectType.forName(dest.getObjectType()), dest.getObjectId()));
                     for (Property src : product.getProperties()) {
                         if (dest.getName().equals(src.getName())) {
                             dest.setDestType(src.getDestType());
@@ -163,6 +167,7 @@ public class Configuration {
                 }
 
                 for (Event dest : device.getEvents()) {
+                    dest.setCovPid(PropertyIdentifier.forName(dest.getCovProperty()));
                     for (Event src : product.getEvents()) {
                         if (dest.getName().equals(src.getName())) {
                             dest.setType(src.getType());
@@ -216,6 +221,14 @@ public class Configuration {
                         xServiceMap.put(service.getName(), service);
                     }
                     device.setXServiceMap(xServiceMap);
+                }
+
+                if (device.getEvents() != null) {
+                    Map<ObjectIdentifier, Event> eventMap = new HashMap<>();
+                    for (Event event : device.getEvents()) {
+                        eventMap.put(new ObjectIdentifier(ObjectType.forName(event.getObjectType()), event.getObjectId()), event);
+                    }
+                    device.setEventMap(eventMap);
                 }
             }
         }

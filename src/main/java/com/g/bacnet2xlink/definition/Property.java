@@ -3,6 +3,7 @@ package com.g.bacnet2xlink.definition;
 import java.util.List;
 import java.util.Map;
 
+import com.serotonin.bacnet4j.type.primitive.ObjectIdentifier;
 import lombok.Data;
 
 import com.g.bacnet2xlink.exception.UnknownValue;
@@ -22,6 +23,7 @@ public class Property {
 
     private String objectType;
     private int objectId;
+    private ObjectIdentifier oid;
 
     private List<Value> valueSet;
     private String valueConverter;

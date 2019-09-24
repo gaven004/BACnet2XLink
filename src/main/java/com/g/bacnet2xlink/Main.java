@@ -26,9 +26,7 @@ import com.serotonin.bacnet4j.type.constructed.PropertyReference;
 import com.serotonin.bacnet4j.type.enumerated.BinaryPV;
 import com.serotonin.bacnet4j.type.enumerated.ObjectType;
 import com.serotonin.bacnet4j.type.enumerated.PropertyIdentifier;
-import com.serotonin.bacnet4j.type.primitive.Boolean;
 import com.serotonin.bacnet4j.type.primitive.ObjectIdentifier;
-import com.serotonin.bacnet4j.type.primitive.Real;
 import com.serotonin.bacnet4j.type.primitive.UnsignedInteger;
 import com.serotonin.bacnet4j.util.PropertyReferences;
 import com.serotonin.bacnet4j.util.PropertyValues;
@@ -64,6 +62,8 @@ public class Main {
 
     private ScheduledExecutorService executor;
 
+    private volatile boolean running = true;
+
     public static void main(String[] args) {
         log.info("");
         log.info("");
@@ -75,19 +75,22 @@ public class Main {
         // 初始化
         Main me = new Main();
 
-        me.initXlinkCmMqttClient();
+        me.initLocalDevice();
+        me.initRemoteDevice();
+        me.initThreadPool();
 
+        me.initXlinkCmMqttClient();
         me.loginXlink();
+
+        me.setAttributeCallback();
+        me.getAttributeCallback();
+        me.serviceInvokeCallback();
 
         // 注册退出钩子
         me.addShutdownHook();
 
         // 运行任务
         me.runTask();
-
-        me.setAttributeCallback();
-        me.getAttributeCallback();
-        me.serviceInvokeCallback();
     }
 
     private static void config() {
@@ -290,7 +293,7 @@ public class Main {
                 //构建应答码
                 String code = "200";
                 //构建应答包输出参数
-                Map<String, Object> output = null;
+                Map<String, Object> output = new HashMap<>();
 
                 try {
                     Device device = context.getDevice(deviceId);
@@ -315,19 +318,22 @@ public class Main {
 
                     }
 
-                    log.info("写物理设备[{}]对象的Present Value属性值：{}");
+                    log.info("写物理设备[{}]对象的Present Value属性值：{}", service.getOid(), converted);
                     RequestUtils.writePresentValue(localDevice, remoteDevice, service.getOid(), converted);
 
                     code = "200";
+                    output.put("code", "SUCCESS");
+                    output.put("message", "服务调用成功");
                 } catch (UnknownDevice | UnknownService | UnknownValue unknown) {
                     log.warn(unknown.getMessage());
                     code = "400";
-//            } catch (UnknownValue unknown) {
-//                log.warn(unknown.getMessage());
-//                code = "500";
+                    output.put("code", unknown.getCode());
+                    output.put("message", "服务调用失败，" + unknown.getMessage());
                 } catch (Exception e) {
                     log.warn("写物理设备属性错误", e);
                     code = "500";
+                    output.put("code", "ERROR");
+                    output.put("message", "服务调用失败，写物理设备属性错误");
                 }
 
                 //构建应答包
@@ -395,13 +401,10 @@ public class Main {
     }
 
     private void runTask() {
-        while (true) {
-            initLocalDevice();
-            initRemoteDevice();
-            initThreadPool();
-
+        while (running) {
             // 启动COV订阅线程
-            SubscribeCOVTask sct = new SubscribeCOVTask(localDevice, remoteDevice, cfg, new UnsignedInteger(subscriberLifetime * 2));
+            SubscribeCOVTask sct = new SubscribeCOVTask(localDevice, remoteDevice, cfg, context,
+                    new UnsignedInteger(subscriberLifetime * 2));
             final ScheduledFuture<?> scf = executor.scheduleAtFixedRate(sct, 0, subscriberLifetime, TimeUnit.SECONDS);
 
             // 启动上报线程，采集并上报数据
@@ -421,7 +424,7 @@ public class Main {
         }
     }
 
-    void shutdown() {
+    private void shutdown() {
         log.info("关闭定时任务和设备");
         if (executor != null) {
             executor.shutdown();
@@ -441,16 +444,20 @@ public class Main {
         localDevice = null;
     }
 
-    void renew() {
+    private void renew() {
         log.warn("重新初始化设备，并运行任务");
         shutdown();
         release();
+
+        initLocalDevice();
+        initRemoteDevice();
+        initThreadPool();
     }
 
     private void unsubscribeCOVEvent() {
         log.info("取消COV订阅...");
 
-        if (localDevice != null) {
+        if (localDevice != null && remoteDevice != null) {
             UnsignedInteger subscriberProcessIdentifier = new UnsignedInteger(localDevice.getInstanceNumber());
 
             for (Product product : cfg.getProducts()) {
@@ -480,6 +487,7 @@ public class Main {
         Runtime.getRuntime().addShutdownHook(new Thread() {
             @Override
             public void run() {
+                running = false;
                 unsubscribeCOVEvent();
                 shutdown();
                 release();

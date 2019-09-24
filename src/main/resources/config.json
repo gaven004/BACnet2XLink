@@ -3,11 +3,15 @@
   "certKey": "77e9fad9-2987-4c93-8170-da775611c437",
   "deviceEndpoint": "mqtt.xlink.cn:1883",
   "connectorType": "5764610525098608128",
+  "version" : 1,
+
   "localDeviceNumber": 1,
   "broadcastAddress": "192.168.0.255",
   "networkPrefix": 24,
   "remoteDeviceNumber": 505528,
+
   "dataSubmitInterval": 60,
+
   "products": [
     {
       "id": "160042baf43b03e9160042baf43b7801",

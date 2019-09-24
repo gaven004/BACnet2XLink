@@ -3,6 +3,7 @@ package com.g.bacnet2xlink.definition;
 import java.util.List;
 import java.util.Map;
 
+import com.serotonin.bacnet4j.type.enumerated.PropertyIdentifier;
 import lombok.Data;
 
 import com.g.bacnet2xlink.exception.UnknownEventMessage;
@@ -27,6 +28,7 @@ public class Event {
     private String objectType;
     private int objectId;
     private String covProperty;
+    private PropertyIdentifier covPid;
 
     private List<EventMessage> messageSet;
 

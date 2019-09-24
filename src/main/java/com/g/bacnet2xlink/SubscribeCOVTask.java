@@ -24,12 +24,14 @@ public class SubscribeCOVTask implements Runnable {
     private LocalDevice ld;
     private RemoteDevice rd;
     private Configuration cfg;
+    private Context context;
     private UnsignedInteger lifetime;
 
-    public SubscribeCOVTask(LocalDevice ld, RemoteDevice rd, Configuration cfg, UnsignedInteger lifetime) {
+    public SubscribeCOVTask(LocalDevice ld, RemoteDevice rd, Configuration cfg, Context context, UnsignedInteger lifetime) {
         this.ld = ld;
         this.rd = rd;
         this.cfg = cfg;
+        this.context = context;
         this.lifetime = lifetime;
     }
 
@@ -51,6 +53,7 @@ public class SubscribeCOVTask implements Runnable {
                         SubscribeCOVPropertyRequest req = new SubscribeCOVPropertyRequest(subscriberProcessIdentifier,
                                 oid, Boolean.TRUE, lifetime, pr, new Real(0));
                         ld.send(rd, req).get();
+                        context.addMonitoredDevice(oid, device);
                     } catch (BACnetException e) {
                         log.warn("COV订阅异常", e);
                     }

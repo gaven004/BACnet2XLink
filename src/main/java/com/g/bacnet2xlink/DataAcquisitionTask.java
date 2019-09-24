@@ -20,8 +20,6 @@ import com.g.bacnet2xlink.exception.UnknownValue;
 public class DataAcquisitionTask implements Runnable {
     private static final Logger log = LoggerFactory.getLogger(DataAcquisitionTask.class);
 
-    private static int version = 0; // 物模型的版本号
-
     private LocalDevice ld;
     private RemoteDevice rd;
 
@@ -50,7 +48,7 @@ public class DataAcquisitionTask implements Runnable {
                 try {
                     DataAcquisitionHelper.readPresentValues(ld, rd, device, attributes, log);
                     log.info("上报设备数据：{}", attributes);
-                    xlinkMqttClient.publishAttribute(device.getXDeviceId(), version, attributes, new Date());
+                    xlinkMqttClient.publishAttribute(device.getXDeviceId(), cfg.getVersion(), attributes, new Date());
                 } catch (UnknownDevice | UnknownProperty | UnknownValue unknown) {
                     log.warn(unknown.getMessage());
                 } catch (BACnetException e) {

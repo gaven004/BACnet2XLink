@@ -17,4 +17,8 @@ public class AppException extends Exception {
         super(message, cause);
         this.code = code;
     }
+
+    public String getCode() {
+        return code;
+    }
 }
