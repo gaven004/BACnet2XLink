@@ -4,8 +4,8 @@
         <Console name="Console" target="SYSTEM_OUT">
             <PatternLayout pattern="%d{ABSOLUTE} %-5level [%t] %c{1.} - %m%n"/>
         </Console>
-        <RollingFile name="RollingFile" fileName="data/logs/blmh/app.log"
-                     filePattern="data/logs/blmh/$${date:yyyy-MM}/app-%d{yyyy-MM-dd}-%i.log.gz">
+        <RollingFile name="RollingFile" fileName="logs/app.log"
+                     filePattern="logs/$${date:yyyy-MM}/app-%d{yyyy-MM-dd}-%i.log.gz">
             <PatternLayout>
                 <Pattern>%d{ABSOLUTE} %-5level [%t] %c{1.} - %m%n</Pattern>
             </PatternLayout>
