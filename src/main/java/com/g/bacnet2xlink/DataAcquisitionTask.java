@@ -37,6 +37,8 @@ public class DataAcquisitionTask implements Runnable {
     public void run() {
         log.info("启动数据采集上报任务...");
 
+        boolean error = false;
+
         for (Product product : cfg.getProducts()) {
             XlinkCmMqttClient xlinkMqttClient = context.getXlinkClient(product.getId());
 
@@ -46,18 +48,29 @@ public class DataAcquisitionTask implements Runnable {
                 // 构建上报数据
                 Map<String, Object> attributes = new HashMap();
                 try {
+                    /*
+                     * 将每一个设备的上报，作为独立的任务
+                     * 好处是其中一个出错，也不干扰其它
+                     * 但遇到断网等整体异常的情况，则会在所有设备上报失败后才会重新初始化
+                     */
                     DataAcquisitionHelper.readPresentValues(ld, rd, device, attributes, log);
                     log.info("上报设备数据：{}", attributes);
                     xlinkMqttClient.publishAttribute(device.getXDeviceId(), cfg.getVersion(), attributes, new Date());
                 } catch (UnknownDevice | UnknownProperty | UnknownValue unknown) {
                     log.warn(unknown.getMessage());
                 } catch (BACnetException e) {
-                    log.warn("采集上报任务异常，任务退出", e);
-                    throw new RuntimeException();
+                    error = true;
+                    log.warn("采集任务异常", e);
                 } catch (Exception e) {
+                    error = true;
                     log.warn("上报任务错误", e);
                 }
             }
+        }
+
+        if (error) {
+            // 抛出异常，通知主线程重新初始化
+            throw new RuntimeException();
         }
 
         log.info("数据采集上报任务结束");
