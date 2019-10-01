@@ -3,6 +3,8 @@ package com.g.bacnet2xlink;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.concurrent.TimeUnit;
+import java.util.concurrent.locks.Lock;
 
 import cn.xlink.iot.sdk.mqtt.client.cm.XlinkCmMqttClient;
 import com.serotonin.bacnet4j.LocalDevice;
@@ -26,53 +28,65 @@ public class DataAcquisitionTask implements Runnable {
     private Configuration cfg;
     private Context context;
 
-    public DataAcquisitionTask(LocalDevice ld, RemoteDevice rd, Configuration cfg, Context context) {
+    private Lock lock;
+
+    public DataAcquisitionTask(LocalDevice ld, RemoteDevice rd, Configuration cfg, Context context, Lock lock) {
         this.ld = ld;
         this.rd = rd;
         this.cfg = cfg;
         this.context = context;
+        this.lock = lock;
     }
 
     @Override
     public void run() {
         log.info("启动数据采集上报任务...");
 
-        boolean error = false;
+        try {
+            if (lock.tryLock(10, TimeUnit.SECONDS)) {
+                boolean error = false;
 
-        for (Product product : cfg.getProducts()) {
-            XlinkCmMqttClient xlinkMqttClient = context.getXlinkClient(product.getId());
+                for (Product product : cfg.getProducts()) {
+                    XlinkCmMqttClient xlinkMqttClient = context.getXlinkClient(product.getId());
 
-            for (Device device : product.getDevices()) {
-                log.info("读取设备[id: {}, mac: {}]数值：", device.getXDeviceId(), device.getMac());
+                    for (Device device : product.getDevices()) {
+                        log.info("读取设备[id: {}, mac: {}]数值：", device.getXDeviceId(), device.getMac());
 
-                // 构建上报数据
-                Map<String, Object> attributes = new HashMap();
-                try {
-                    /*
-                     * 将每一个设备的上报，作为独立的任务
-                     * 好处是其中一个出错，也不干扰其它
-                     * 但遇到断网等整体异常的情况，则会在所有设备上报失败后才会重新初始化
-                     */
-                    DataAcquisitionHelper.readPresentValues(ld, rd, device, attributes, log);
-                    log.info("上报设备数据：{}", attributes);
-                    xlinkMqttClient.publishAttribute(device.getXDeviceId(), cfg.getVersion(), attributes, new Date());
-                } catch (UnknownDevice | UnknownProperty | UnknownValue unknown) {
-                    log.warn(unknown.getMessage());
-                } catch (BACnetException e) {
-                    error = true;
-                    log.warn("采集任务异常", e);
-                } catch (Exception e) {
-                    error = true;
-                    log.warn("上报任务错误", e);
+                        // 构建上报数据
+                        Map<String, Object> attributes = new HashMap();
+                        try {
+                            /*
+                             * 将每一个设备的上报，作为独立的任务
+                             * 好处是其中一个出错，也不干扰其它
+                             * 但遇到断网等整体异常的情况，则会在所有设备上报失败后才会重新初始化
+                             */
+                            DataAcquisitionHelper.readPresentValues(ld, rd, device, attributes, log);
+                            log.info("上报设备数据：{}", attributes);
+                            xlinkMqttClient.publishAttribute(device.getXDeviceId(), cfg.getVersion(), attributes, new Date());
+                        } catch (UnknownDevice | UnknownProperty | UnknownValue unknown) {
+                            log.warn(unknown.getMessage());
+                        } catch (BACnetException e) {
+                            error = true;
+                            log.warn("采集任务异常", e);
+                        } catch (Exception e) {
+                            error = true;
+                            log.warn("上报任务错误", e);
+                        }
+                    }
                 }
+
+                if (error) {
+                    // 抛出异常，通知主线程重新初始化
+                    throw new RuntimeException();
+                }
+
+                log.info("数据采集上报任务结束");
             }
+        } catch (InterruptedException e) {
+            log.warn("上一数据采集上报任务未完成，暂停本次任务");
+        } finally {
+            //release lock
+            lock.unlock();
         }
-
-        if (error) {
-            // 抛出异常，通知主线程重新初始化
-            throw new RuntimeException();
-        }
-
-        log.info("数据采集上报任务结束");
     }
 }

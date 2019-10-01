@@ -6,6 +6,8 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.ScheduledFuture;
 import java.util.concurrent.TimeUnit;
+import java.util.concurrent.locks.Lock;
+import java.util.concurrent.locks.ReentrantLock;
 
 import cn.xlink.iot.sdk.XlinkMqttBuilderParams;
 import cn.xlink.iot.sdk.mqtt.client.cm.XlinkCmMqttClient;
@@ -61,6 +63,8 @@ public class Main {
     private RemoteDevice remoteDevice = null;
 
     private ScheduledExecutorService executor;
+
+    private Lock datLock = new ReentrantLock();
 
     private volatile boolean running = true;
 
@@ -426,19 +430,21 @@ public class Main {
             final ScheduledFuture<?> scf = executor.scheduleAtFixedRate(sct, 0, subscriberLifetime, TimeUnit.SECONDS);
 
             // 启动上报线程，采集并上报数据
-            DataAcquisitionTask dat = new DataAcquisitionTask(localDevice, remoteDevice, cfg, context);
+            DataAcquisitionTask dat = new DataAcquisitionTask(localDevice, remoteDevice, cfg, context, datLock);
             final ScheduledFuture<?> daf = executor.scheduleWithFixedDelay(dat,
                     cfg.getDataSubmitInterval(), cfg.getDataSubmitInterval(), TimeUnit.SECONDS);
 
-            while (!daf.isDone() && !daf.isCancelled()) {
+            while (running && !daf.isDone() && !daf.isCancelled()) {
                 try {
                     Thread.sleep(60000);
                 } catch (InterruptedException e) {
                 }
             }
 
-            // 任务中有异常抛出，则任务结束，重新初始化设备，并运行任务
-            renew();
+            if (running) {
+                // 任务中有异常抛出，则任务结束，重新初始化设备，并运行任务
+                renew();
+            }
         }
     }
 
