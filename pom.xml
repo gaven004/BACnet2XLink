@@ -26,20 +26,9 @@
         </dependency>
 
         <dependency>
-            <groupId>lohbihler</groupId>
-            <artifactId>sero-scheduler</artifactId>
-            <version>[1.0.0,2)</version>
-        </dependency>
-        <dependency>
-            <groupId>lohbihler</groupId>
-            <artifactId>sero-warp</artifactId>
-            <version>[1.0.0,2)</version>
-        </dependency>
-
-        <dependency>
-            <groupId>org.apache.commons</groupId>
-            <artifactId>commons-lang3</artifactId>
-            <version>3.5</version>
+            <groupId>com.infiniteautomation</groupId>
+            <artifactId>bacnet4j</artifactId>
+            <version>5.0.1</version>
         </dependency>
 
         <dependency>
@@ -55,15 +44,9 @@
         </dependency>
 
         <dependency>
-            <groupId>org.scream3r</groupId>
-            <artifactId>jssc</artifactId>
-            <version>2.8.0</version>
-        </dependency>
-
-        <dependency>
             <groupId>org.slf4j</groupId>
             <artifactId>slf4j-api</artifactId>
-            <version>1.7.9</version>
+            <version>1.7.25</version>
         </dependency>
 
         <dependency>

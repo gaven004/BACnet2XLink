@@ -7,6 +7,8 @@ import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.ScheduledFuture;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicBoolean;
+import java.util.concurrent.locks.Lock;
+import java.util.concurrent.locks.ReentrantLock;
 
 import cn.xlink.iot.sdk.XlinkMqttBuilderParams;
 import cn.xlink.iot.sdk.mqtt.client.cm.XlinkCmMqttClient;
@@ -63,6 +65,8 @@ public class Worker implements Runnable {
 
     private ScheduledExecutorService executor;
 
+    private Lock datLock = new ReentrantLock();
+
     public Worker(Configuration cfg) {
         this.cfg = cfg;
     }
@@ -112,7 +116,7 @@ public class Worker implements Runnable {
             final ScheduledFuture<?> scf = executor.scheduleAtFixedRate(sct, 0, subscriberLifetime, TimeUnit.SECONDS);
 
             // 启动上报线程，采集并上报数据
-            DataAcquisitionTask dat = new DataAcquisitionTask(localDevice, remoteDevice, cfg, context);
+            DataAcquisitionTask dat = new DataAcquisitionTask(localDevice, remoteDevice, cfg, context, datLock);
             final ScheduledFuture<?> daf = executor.scheduleWithFixedDelay(dat,
                     cfg.getDataSubmitInterval(), cfg.getDataSubmitInterval(), TimeUnit.SECONDS);
 
