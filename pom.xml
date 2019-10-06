@@ -127,6 +127,27 @@
                 </executions>
             </plugin>
             <plugin>
+                <artifactId>maven-resources-plugin</artifactId>
+                <version>3.1.0</version>
+                <configuration>
+                    <outputDirectory>${project.build.directory}</outputDirectory>
+                    <resources>
+                        <resource>
+                            <directory>src/main/resources</directory>
+                            <filtering>false</filtering>
+                        </resource>
+                        <resource>
+                            <directory>.</directory>
+                            <includes>
+                                <include>README.md</include>
+                                <include>BACnet4J license.txt</include>
+                            </includes>
+                            <filtering>false</filtering>
+                        </resource>
+                    </resources>
+                </configuration>
+            </plugin>
+            <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-jar-plugin</artifactId>
                 <version>3.1.2</version>

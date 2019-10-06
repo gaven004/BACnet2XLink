@@ -79,6 +79,9 @@ public class Main {
         // 初始化
         Main me = new Main();
 
+        // 注册退出钩子
+        me.addShutdownHook();
+
         me.initLocalDevice();
         me.initRemoteDevice();
         me.initThreadPool();
@@ -89,9 +92,6 @@ public class Main {
         me.setAttributeCallback();
         me.getAttributeCallback();
         me.serviceInvokeCallback();
-
-        // 注册退出钩子
-        me.addShutdownHook();
 
         // 运行任务
         me.runTask();
