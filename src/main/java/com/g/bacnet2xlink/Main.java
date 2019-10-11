@@ -34,6 +34,7 @@ import com.serotonin.bacnet4j.util.PropertyReferences;
 import com.serotonin.bacnet4j.util.PropertyValues;
 import com.serotonin.bacnet4j.util.RequestUtils;
 import org.apache.commons.lang3.StringUtils;
+import org.apache.logging.log4j.LogManager;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import xlink.cm.message.DeviceLoginResultMessage;
@@ -518,6 +519,7 @@ public class Main {
                 shutdown();
                 release();
                 log.info("退出系统！！！");
+                LogManager.shutdown();
             }
         });
     }

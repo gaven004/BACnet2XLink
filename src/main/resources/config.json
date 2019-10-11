@@ -71,7 +71,7 @@
         {
           "name": "running_time",
           "desc": "累计运行时间（分钟）",
-          "destType": "Float",
+          "destType": "Integer",
           "valueConverter": ""
         }
       ],

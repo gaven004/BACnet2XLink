@@ -23,11 +23,11 @@ public class DataAcquisitionHelper {
             if (property.getValueConverter() != null && property.getValueConverter().trim().length() > 0) {
 
             } else if (property.getValueSet() != null && property.getValueSet().size() > 0) {
-                value = property.getValue(pvs.get(opr).toString());
+                value = property.getValue(pvs.get(opr).toString()).getXvalue();
             } else {
                 String type = property.getDestType();
                 if (type.equals("Integer")) {
-                    value = Integer.parseInt(pvs.get(opr).toString());
+                    value = Float.valueOf(pvs.get(opr).toString()).intValue();
                 } else if (type.equals("Float")) {
                     value = Float.parseFloat(pvs.get(opr).toString());
                 } else {

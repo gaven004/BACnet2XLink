@@ -82,6 +82,7 @@ public class MyDeviceEventAdapter extends DeviceEventAdapter {
                     for (PropertyValue pv : listOfValues) {
                         if (pv.getPropertyIdentifier().toString().equals("event_state")) {
                             es = pv;
+                            break;
                         }
                     }
                     pushData.put("code", es.toString());

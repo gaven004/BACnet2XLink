@@ -40,7 +40,7 @@ public class MyTest {
     @Before
     public void before() throws Exception {
         builder = new IpNetworkBuilder();
-        builder.withBroadcast("192.168.0.255", 24);
+        builder.withBroadcast("192.168.31.255", 24);
         network = builder.build();
         localDevice = new LocalDevice(ObjectIdentifier.UNINITIALIZED, new DefaultTransport(network));
 
