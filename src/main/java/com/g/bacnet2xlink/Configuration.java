@@ -153,7 +153,8 @@ public class Configuration {
 
                 if (device.getProperties() != null)
                     for (Property dest : device.getProperties()) {
-                        dest.setOid(new ObjectIdentifier(ObjectType.forName(dest.getObjectType()), dest.getObjectId()));
+                        if (!"constant".equals(dest.getObjectType()))
+                            dest.setOid(new ObjectIdentifier(ObjectType.forName(dest.getObjectType()), dest.getObjectId()));
                         for (Property src : product.getProperties()) {
                             if (dest.getName().equals(src.getName())) {
                                 dest.setDestType(src.getDestType());
@@ -209,15 +210,30 @@ public class Configuration {
                     }
 
                 List<ObjectIdentifier> oids = new ArrayList<>();
+                Map<String, Object> immutableProperties = new HashMap<>();
                 Map<ObjectIdentifier, Property> propertyMap = new HashMap<>();
                 Map<String, Property> xPropertyMap = new HashMap<>();
                 for (Property property : device.getProperties()) {
-                    ObjectIdentifier oid = new ObjectIdentifier(ObjectType.forName(property.getObjectType()), property.getObjectId());
-                    oids.add(oid);
-                    propertyMap.put(oid, property);
-                    xPropertyMap.put(property.getName(), property);
+                    if (!"constant".equals(property.getObjectType())) {
+                        ObjectIdentifier oid = new ObjectIdentifier(ObjectType.forName(property.getObjectType()), property.getObjectId());
+                        oids.add(oid);
+                        propertyMap.put(oid, property);
+                        xPropertyMap.put(property.getName(), property);
+                    } else {
+                        String type = property.getDestType();
+                        Object value;
+                        if (type.equals("Integer")) {
+                            value = Float.valueOf(property.getValue()).intValue();
+                        } else if (type.equals("Float")) {
+                            value = Float.parseFloat(property.getValue());
+                        } else {
+                            value = property.getValue();
+                        }
+                        immutableProperties.put(property.getName(), value);
+                    }
                 }
                 device.setOids(oids);
+                device.setImmutableProperties(immutableProperties);
                 device.setPropertyMap(propertyMap);
                 device.setXPropertyMap(xPropertyMap);
 

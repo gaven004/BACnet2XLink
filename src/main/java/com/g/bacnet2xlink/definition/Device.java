@@ -31,6 +31,8 @@ public class Device {
     private List<Event> events;
     private List<Service> services;
 
+    private Map<String, Object> immutableProperties;
+
     private Map<ObjectIdentifier, Property> propertyMap;
     private Map<String, Property> xPropertyMap;
 

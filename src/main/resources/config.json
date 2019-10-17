@@ -522,6 +522,18 @@
       "name": "电梯",
       "properties": [
         {
+          "name": "up_down_status",
+          "desc": "上下行状态",
+          "destType": "Integer",
+          "valueConverter": ""
+        },
+        {
+          "name": "device_status",
+          "desc": "运行状态",
+          "destType": "Integer",
+          "valueConverter": ""
+        },
+        {
           "name": "device_type",
           "desc": "电梯类型",
           "destType": "Integer",

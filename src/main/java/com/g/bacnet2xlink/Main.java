@@ -486,20 +486,21 @@ public class Main {
 
             for (Product product : cfg.getProducts()) {
                 for (Device device : product.getDevices()) {
-                    for (Event event : device.getEvents()) {
-                        log.info("取消订阅设备[mac: {}]对象[{} {}]属性[{}]的COV事件", device.getMac(), event.getObjectType(),
-                                event.getObjectId(), event.getCovProperty());
-                        try {
-                            ObjectIdentifier oid = new ObjectIdentifier(ObjectType.forName(event.getObjectType()),
-                                    event.getObjectId());
-                            PropertyReference pr = new PropertyReference(PropertyIdentifier.forName(event.getCovProperty()));
-                            SubscribeCOVPropertyRequest req = new SubscribeCOVPropertyRequest(subscriberProcessIdentifier,
-                                    oid, null, null, pr, null);
-                            localDevice.send(remoteDevice, req).get();
-                        } catch (BACnetException e) {
-                            log.warn("取消COV订阅异常", e);
+                    if (device.getEvents() != null)
+                        for (Event event : device.getEvents()) {
+                            log.info("取消订阅设备[mac: {}]对象[{} {}]属性[{}]的COV事件", device.getMac(), event.getObjectType(),
+                                    event.getObjectId(), event.getCovProperty());
+                            try {
+                                ObjectIdentifier oid = new ObjectIdentifier(ObjectType.forName(event.getObjectType()),
+                                        event.getObjectId());
+                                PropertyReference pr = new PropertyReference(PropertyIdentifier.forName(event.getCovProperty()));
+                                SubscribeCOVPropertyRequest req = new SubscribeCOVPropertyRequest(subscriberProcessIdentifier,
+                                        oid, null, null, pr, null);
+                                localDevice.send(remoteDevice, req).get();
+                            } catch (BACnetException e) {
+                                log.warn("取消COV订阅异常", e);
+                            }
                         }
-                    }
                 }
             }
         }

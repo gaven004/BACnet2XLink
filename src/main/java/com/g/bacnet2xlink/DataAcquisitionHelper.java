@@ -36,5 +36,9 @@ public class DataAcquisitionHelper {
             }
             attributes.put(property.getName(), value);
         }
+
+        if (!device.getImmutableProperties().isEmpty()) {
+            attributes.putAll(device.getImmutableProperties());
+        }
     }
 }

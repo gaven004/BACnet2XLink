@@ -27,6 +27,7 @@ public class Property {
 
     private List<Value> valueSet;
     private String valueConverter;
+    private String value;
 
     private Map<String, Value> valueMap;
     private Map<Object, Value> xValueMap;
