@@ -66,6 +66,17 @@ public class MockDevice {
             obj.writePropertyInternal(PropertyIdentifier.presentValue, new Real(random.nextFloat()));
             device.addObject(obj);
 
+            // 集水井
+            obj = new BACnetObject(device, ObjectType.forName("analog-value"), 500401, "well-water_evel");
+            obj.writePropertyInternal(PropertyIdentifier.presentValue, new Real(random.nextInt()));
+            device.addObject(obj);
+
+            obj = new BACnetObject(device, ObjectType.forName("analog-value"), 500402, "well-water_capacity");
+            obj.writePropertyInternal(PropertyIdentifier.presentValue, new Real(random.nextFloat()));
+            device.addObject(obj);
+
+
+
             System.out.println("Device is ready!");
         } catch (Exception e) {
             e.printStackTrace();
