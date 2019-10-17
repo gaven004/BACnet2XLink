@@ -62,7 +62,7 @@ public class MockDevice {
             device.addObject(obj);
             new Timer().schedule(new UptimeCounter(uptime, 1, obj), 60 * 1000, 60 * 1000);
 
-            obj = new BACnetObject(device, ObjectType.forName("analog-value"), 500106, "pump-running_time");
+            obj = new BACnetObject(device, ObjectType.forName("analog-value"), 500106, "pump-pressure");
             obj.writePropertyInternal(PropertyIdentifier.presentValue, new Real(random.nextFloat()));
             device.addObject(obj);
 
