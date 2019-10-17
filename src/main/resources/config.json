@@ -275,6 +275,285 @@
           ]
         }
       ]
+    },
+    {
+      "id": "160002baf43b03e9160002baf43b0001",
+      "name": "集水井",
+      "properties": [
+        {
+          "name": "water_evel",
+          "desc": "水位高度（m）",
+          "destType": "Float",
+          "valueConverter": ""
+        },
+        {
+          "name": "water_capacity",
+          "desc": "水容量百分比",
+          "destType": "Float",
+          "valueConverter": ""
+        }
+      ],
+      "devices": [
+        {
+          "mac": "500400",
+          "properties": [
+            {
+              "name": "water_evel",
+              "desc": "水位高度（m）",
+              "objectId": 500401,
+              "objectType": "analog-value"
+            },
+            {
+              "name": "water_capacity",
+              "desc": "水容量百分比",
+              "objectId": 500402,
+              "objectType": "analog-value"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "160002baf43b03e9160002baf43b4001",
+      "name": "进线柜",
+      "properties": [
+        {
+          "name": "status",
+          "desc": "运行状态",
+          "destType": "Integer",
+          "valueSet": [
+            {
+              "value": "inactive",
+              "xvalue": 2,
+              "desc": "分闸"
+            },
+            {
+              "value": "active",
+              "xvalue": 1,
+              "desc": "合闸"
+            }
+          ]
+        },
+        {
+          "name": "power_factor",
+          "desc": "功率因数(%)",
+          "destType": "Float",
+          "valueConverter": ""
+        },
+        {
+          "name": "power",
+          "desc": "功率(KW)",
+          "destType": "Float",
+          "valueConverter": ""
+        },
+        {
+          "name": "inspecting_power",
+          "desc": "视在功率(VA)",
+          "destType": "Float",
+          "valueConverter": ""
+        },
+        {
+          "name": "total_active_power",
+          "desc": "总有功功率(kW)",
+          "destType": "Float",
+          "valueConverter": ""
+        },
+        {
+          "name": "active_energy",
+          "desc": "有功电度(kWh)",
+          "destType": "Float",
+          "valueConverter": ""
+        },
+        {
+          "name": "current_a",
+          "desc": "A相电流(A)",
+          "destType": "Float",
+          "valueConverter": ""
+        },
+        {
+          "name": "current_b",
+          "desc": "B相电流(A)",
+          "destType": "Float",
+          "valueConverter": ""
+        },
+        {
+          "name": "current_c",
+          "desc": "C相电流(A)",
+          "destType": "Float",
+          "valueConverter": ""
+        },
+        {
+          "name": "voltage_a",
+          "desc": "A相电压(V)",
+          "destType": "Float",
+          "valueConverter": ""
+        },
+        {
+          "name": "voltage_b",
+          "desc": "B相电压(V)",
+          "destType": "Float",
+          "valueConverter": ""
+        },
+        {
+          "name": "voltage_c",
+          "desc": "C相电压(V)",
+          "destType": "Float",
+          "valueConverter": ""
+        },
+        {
+          "name": "line_voltage_ac",
+          "desc": "AC线电压(V)",
+          "destType": "Float",
+          "valueConverter": ""
+        },
+        {
+          "name": "line_voltage_ab",
+          "desc": "AB线电压(V)",
+          "destType": "Float",
+          "valueConverter": ""
+        },
+        {
+          "name": "line_voltage_bc",
+          "desc": "BC线电压(V)",
+          "destType": "Float",
+          "valueConverter": ""
+        }
+      ],
+      "devices": [
+        {
+          "mac": "500500",
+          "properties": [
+            {
+              "name": "status",
+              "desc": "运行状态",
+              "objectId": 500501,
+              "objectType": "binary-input"
+            },
+            {
+              "name": "power_factor",
+              "desc": "功率因数(%)",
+              "objectId": 500502,
+              "objectType": "analog-value"
+            },
+            {
+              "name": "power",
+              "desc": "功率(KW)",
+              "objectId": 500503,
+              "objectType": "analog-value"
+            },
+            {
+              "name": "inspecting_power",
+              "desc": "视在功率(VA)",
+              "objectId": 500504,
+              "objectType": "analog-value"
+            },
+            {
+              "name": "total_active_power",
+              "desc": "总有功功率(kW)",
+              "objectId": 500505,
+              "objectType": "analog-value"
+            },
+            {
+              "name": "active_energy",
+              "desc": "有功电度(kWh)",
+              "objectId": 500506,
+              "objectType": "analog-value"
+            },
+            {
+              "name": "current_a",
+              "desc": "A相电流(A)",
+              "objectId": 500507,
+              "objectType": "analog-value"
+            },
+            {
+              "name": "current_b",
+              "desc": "B相电流(A)",
+              "objectId": 500508,
+              "objectType": "analog-value"
+            },
+            {
+              "name": "current_c",
+              "desc": "C相电流(A)",
+              "objectId": 500509,
+              "objectType": "analog-value"
+            },
+            {
+              "name": "voltage_a",
+              "desc": "A相电压(V)",
+              "objectId": 500510,
+              "objectType": "analog-value"
+            },
+            {
+              "name": "voltage_b",
+              "desc": "B相电压(V)",
+              "objectId": 500511,
+              "objectType": "analog-value"
+            },
+            {
+              "name": "voltage_c",
+              "desc": "C相电压(V)",
+              "objectId": 500512,
+              "objectType": "analog-value"
+            },
+            {
+              "name": "line_voltage_ac",
+              "desc": "AC线电压(V)",
+              "objectId": 500513,
+              "objectType": "analog-value"
+            },
+            {
+              "name": "line_voltage_ab",
+              "desc": "AB线电压(V)",
+              "objectId": 500514,
+              "objectType": "analog-value"
+            },
+            {
+              "name": "line_voltage_bc",
+              "desc": "BC线电压(V)",
+              "objectId": 500515,
+              "objectType": "analog-value"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "160042baf43903e9160042baf439f401",
+      "name": "电梯",
+      "properties": [
+        {
+          "name": "device_type",
+          "desc": "电梯类型",
+          "destType": "Integer",
+          "valueConverter": ""
+        },
+        {
+          "name": "current_floor",
+          "desc": "所处楼层",
+          "destType": "Integer",
+          "valueConverter": ""
+        }
+      ],
+      "devices": [
+        {
+          "mac": "500300",
+          "properties": [
+            {
+              "name": "device_type",
+              "desc": "电梯类型",
+              "objectId": 0,
+              "objectType": "constant",
+              "value": "1"
+            },
+            {
+              "name": "current_floor",
+              "desc": "所处楼层",
+              "objectId": 500304,
+              "objectType": "analog-value"
+            }
+          ]
+        }
+      ]
     }
   ]
 }
