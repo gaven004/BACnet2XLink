@@ -75,6 +75,67 @@ public class MockDevice {
             obj.writePropertyInternal(PropertyIdentifier.presentValue, new Real(random.nextFloat()));
             device.addObject(obj);
 
+            // 进线柜
+            obj = new BACnetObject(device, ObjectType.forName("binary-input"), 500501, "box-status");
+            obj.writePropertyInternal(PropertyIdentifier.presentValue, BinaryPV.active);
+            device.addObject(obj);
+
+            obj = new BACnetObject(device, ObjectType.forName("analog-value"), 500502, "box-power_factor");
+            obj.writePropertyInternal(PropertyIdentifier.presentValue, new Real(random.nextFloat()));
+            device.addObject(obj);
+
+            obj = new BACnetObject(device, ObjectType.forName("analog-value"), 500503, "box-power");
+            obj.writePropertyInternal(PropertyIdentifier.presentValue, new Real(random.nextFloat()));
+            device.addObject(obj);
+
+            obj = new BACnetObject(device, ObjectType.forName("analog-value"), 500504, "box-inspecting_power");
+            obj.writePropertyInternal(PropertyIdentifier.presentValue, new Real(random.nextFloat()));
+            device.addObject(obj);
+
+            obj = new BACnetObject(device, ObjectType.forName("analog-value"), 500505, "box-total_active_power");
+            obj.writePropertyInternal(PropertyIdentifier.presentValue, new Real(random.nextFloat()));
+            device.addObject(obj);
+
+            obj = new BACnetObject(device, ObjectType.forName("analog-value"), 500506, "box-active_energy");
+            obj.writePropertyInternal(PropertyIdentifier.presentValue, new Real(random.nextFloat()));
+            device.addObject(obj);
+
+            obj = new BACnetObject(device, ObjectType.forName("analog-value"), 500507, "box-current_a");
+            obj.writePropertyInternal(PropertyIdentifier.presentValue, new Real(random.nextFloat()));
+            device.addObject(obj);
+
+            obj = new BACnetObject(device, ObjectType.forName("analog-value"), 500508, "box-current_b");
+            obj.writePropertyInternal(PropertyIdentifier.presentValue, new Real(random.nextFloat()));
+            device.addObject(obj);
+
+            obj = new BACnetObject(device, ObjectType.forName("analog-value"), 500509, "box-current_c");
+            obj.writePropertyInternal(PropertyIdentifier.presentValue, new Real(random.nextFloat()));
+            device.addObject(obj);
+
+            obj = new BACnetObject(device, ObjectType.forName("analog-value"), 500510, "box-voltage_a");
+            obj.writePropertyInternal(PropertyIdentifier.presentValue, new Real(random.nextFloat()));
+            device.addObject(obj);
+
+            obj = new BACnetObject(device, ObjectType.forName("analog-value"), 500511, "box-voltage_b");
+            obj.writePropertyInternal(PropertyIdentifier.presentValue, new Real(random.nextFloat()));
+            device.addObject(obj);
+
+            obj = new BACnetObject(device, ObjectType.forName("analog-value"), 500512, "box-voltage_c");
+            obj.writePropertyInternal(PropertyIdentifier.presentValue, new Real(random.nextFloat()));
+            device.addObject(obj);
+
+            obj = new BACnetObject(device, ObjectType.forName("analog-value"), 500513, "box-line_voltage_ac");
+            obj.writePropertyInternal(PropertyIdentifier.presentValue, new Real(random.nextFloat()));
+            device.addObject(obj);
+
+            obj = new BACnetObject(device, ObjectType.forName("analog-value"), 500514, "box-line_voltage_ab");
+            obj.writePropertyInternal(PropertyIdentifier.presentValue, new Real(random.nextFloat()));
+            device.addObject(obj);
+
+            obj = new BACnetObject(device, ObjectType.forName("analog-value"), 500515, "box-line_voltage_bc");
+            obj.writePropertyInternal(PropertyIdentifier.presentValue, new Real(random.nextFloat()));
+            device.addObject(obj);
+
 
 
             System.out.println("Device is ready!");
