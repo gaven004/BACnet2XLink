@@ -132,6 +132,13 @@ public class Main {
     private void initXlinkCmMqttClient() {
         log.info("初始化xlinkMqttClient...");
 
+        // 构造器配置
+        XlinkMqttBuilderParams.XlinkMqttBuilderParamsBuilder builder = XlinkMqttBuilderParams.builder()
+                .certId(cfg.getCertId()) // 配置授权证书ID
+                .certKey(cfg.getCertKey()) // 配置授权证书密钥
+                .endpoint(cfg.getDeviceEndpoint()) // 云端CM服务器地址
+                .connectorType(cfg.getConnectorType()); // 配置连接器类型
+
         for (Product product : cfg.getProducts()) {
             String[] serviceNames = null;
             if (product.getServices() != null && product.getServices().size() > 0) {
@@ -142,28 +149,21 @@ public class Main {
                 }
             }
 
-            // 构造器配置
-            XlinkMqttBuilderParams.XlinkMqttBuilderParamsBuilder builder = XlinkMqttBuilderParams.builder()
-                    .certId(cfg.getCertId()) // 配置授权证书ID
-                    .certKey(cfg.getCertKey()) // 配置授权证书密钥
-                    .endpoint(cfg.getDeviceEndpoint()) // 云端CM服务器地址
-                    .connectorType(cfg.getConnectorType()); // 配置连接器类型
-
             if (serviceNames != null) {
                 builder.addSubscribeServiceName(product.getId(), serviceNames); // 订阅物模型服务处理
             }
+        }
 
-            XlinkCmMqttClient xlinkMqttClient = builder.build(); // 构造XlinkMqttBuilderParams实例
+        XlinkCmMqttClient xlinkMqttClient = builder.build(); // 构造XlinkMqttBuilderParams实例
 
-            // 建立连接及认证
-            try {
-                xlinkMqttClient.start();
-                context.addXlinkClient(product.getId(), xlinkMqttClient);
-                log.info("建立{}产品[id:{}]的Xagent客户端成功", product.getName(), product.getId());
-            } catch (Exception e) {
-                context.removeXlinkClient(product.getId());
-                log.error(String.format("建立{}产品[id:{}]的Xagent客户端成功", product.getName(), product.getId()), e);
-            }
+        // 建立连接及认证
+        try {
+            xlinkMqttClient.start();
+            context.setXlinkCmMqttClient(xlinkMqttClient);
+            log.info("建立Xagent客户端成功");
+        } catch (Exception e) {
+            context.setXlinkCmMqttClient(null);
+            log.error(String.format("建立Xagent客户端失败"), e);
         }
     }
 
@@ -171,9 +171,9 @@ public class Main {
         // 在平台登录上线，并得到返回
         log.info("设备平台上线...");
 
-        for (Product product : cfg.getProducts()) {
-            XlinkCmMqttClient xlinkMqttClient = context.getXlinkClient(product.getId());
+        XlinkCmMqttClient xlinkMqttClient = context.getXlinkCmMqttClient();
 
+        for (Product product : cfg.getProducts()) {
             if (xlinkMqttClient != null) {
                 for (Device device : product.getDevices()) {
                     DeviceLoginResultMessage deviceLoginResultMessage = null;
@@ -210,25 +210,24 @@ public class Main {
      */
     private void setAttributeCallback() {
         log.info("监听服务端的属性设置请求");
-        for (Product product : cfg.getProducts()) {
-            XlinkCmMqttClient xlinkMqttClient = context.getXlinkClient(product.getId());
 
-            if (xlinkMqttClient != null) {
-                //监听服务端属性设置回调方法，注意：多个设备ID的属性设置回调方法实现可以为同一个
-                xlinkMqttClient.setSetAttributeHandler(request -> {
-                    log.info("云平台远程设置物理设备属性，{}", request);
+        XlinkCmMqttClient xlinkMqttClient = context.getXlinkCmMqttClient();
 
-                    //构建应答包错误码
-                    String code = "501";
-                    //构建应答包
-                    SetAttributeResponse response = new SetAttributeResponse(code);
+        if (xlinkMqttClient != null) {
+            //监听服务端属性设置回调方法，注意：多个设备ID的属性设置回调方法实现可以为同一个
+            xlinkMqttClient.setSetAttributeHandler(request -> {
+                log.info("云平台远程设置物理设备属性，{}", request);
 
-                    log.info("目前不支持对协议中的设备属性写入，返回：{}", response);
+                //构建应答包错误码
+                String code = "501";
+                //构建应答包
+                SetAttributeResponse response = new SetAttributeResponse(code);
 
-                    //通过方法返回值进行应答，如方法返回值null，则不会应答。
-                    return response;
-                });
-            }
+                log.info("目前不支持对协议中的设备属性写入，返回：{}", response);
+
+                //通过方法返回值进行应答，如方法返回值null，则不会应答。
+                return response;
+            });
         }
     }
 
@@ -237,47 +236,46 @@ public class Main {
      */
     private void getAttributeCallback() {
         log.info("监听服务端的属性获取请求");
-        for (Product product : cfg.getProducts()) {
-            XlinkCmMqttClient xlinkMqttClient = context.getXlinkClient(product.getId());
 
-            if (xlinkMqttClient != null) {
-                //监听服务端属性获取回调方法，注意：多个设备ID的属性获取回调方法实现可以为同一个
-                xlinkMqttClient.setGetAttributeHandler(request -> {
-                    log.info("云平台远程读取物理设备属性，{}", request);
+        XlinkCmMqttClient xlinkMqttClient = context.getXlinkCmMqttClient();
 
-                    //得到服务端属性获取的设备ID
-                    int deviceId = request.getDeviceId();
+        if (xlinkMqttClient != null) {
+            //监听服务端属性获取回调方法，注意：多个设备ID的属性获取回调方法实现可以为同一个
+            xlinkMqttClient.setGetAttributeHandler(request -> {
+                log.info("云平台远程读取物理设备属性，{}", request);
 
-                    //构建应答的信息属性
-                    Map<String, Object> attributes = new HashMap<>();
-                    //构建应答码
-                    String code = null;
+                //得到服务端属性获取的设备ID
+                int deviceId = request.getDeviceId();
 
-                    try {
-                        Device device = context.getDevice(deviceId);
-                        log.info("读取设备[{}]数值：", device.getMac());
-                        DataAcquisitionHelper.readPresentValues(localDevice, remoteDevice, device, attributes, log);
-                        code = "200";
-                    } catch (UnknownDevice unknown) {
-                        log.warn(unknown.getMessage());
-                        code = "400";
-                    } catch (UnknownProperty | UnknownValue unknown) {
-                        log.warn(unknown.getMessage());
-                        code = "500";
-                    } catch (Exception e) {
-                        log.warn("读物理设备属性错误", e);
-                        code = "500";
-                    }
+                //构建应答的信息属性
+                Map<String, Object> attributes = new HashMap<>();
+                //构建应答码
+                String code = null;
 
-                    //构建应答包
-                    GetAttributeResponse response = new GetAttributeResponse(code, attributes);
+                try {
+                    Device device = context.getDevice(deviceId);
+                    log.info("读取设备[{}]数值：", device.getMac());
+                    DataAcquisitionHelper.readPresentValues(localDevice, remoteDevice, device, attributes, log);
+                    code = "200";
+                } catch (UnknownDevice unknown) {
+                    log.warn(unknown.getMessage());
+                    code = "400";
+                } catch (UnknownProperty | UnknownValue unknown) {
+                    log.warn(unknown.getMessage());
+                    code = "500";
+                } catch (Exception e) {
+                    log.warn("读物理设备属性错误", e);
+                    code = "500";
+                }
 
-                    log.info("读取物理设备属性返回：{}", response);
+                //构建应答包
+                GetAttributeResponse response = new GetAttributeResponse(code, attributes);
 
-                    //通过方法返回值进行应答，如方法返回值为null，则不会应答
-                    return response;
-                });
-            }
+                log.info("读取物理设备属性返回：{}", response);
+
+                //通过方法返回值进行应答，如方法返回值为null，则不会应答
+                return response;
+            });
         }
     }
 
@@ -286,76 +284,75 @@ public class Main {
      */
     private void serviceInvokeCallback() {
         log.info("监听服务端的服务调用下发");
-        for (Product product : cfg.getProducts()) {
-            XlinkCmMqttClient xlinkMqttClient = context.getXlinkClient(product.getId());
 
-            if (xlinkMqttClient != null) {
-                //监听服务端服务调用的回调方法，注意：多个设备ID、多个不同服务的服务调用回调方法实现可以为同一个。
-                xlinkMqttClient.setServiceInvokeHandler(request -> {
-                    log.info("云平台远程服务调用，{}", request);
+        XlinkCmMqttClient xlinkMqttClient = context.getXlinkCmMqttClient();
 
-                    //得到服务调用的设备ID
-                    int deviceId = request.getDeviceId();
-                    //得到服务调用的服务名
-                    String serviceName = request.getServiceName();
-                    //得到服务调用的输入参数
-                    Map<String, Object> input = request.getInput();
+        if (xlinkMqttClient != null) {
+            //监听服务端服务调用的回调方法，注意：多个设备ID、多个不同服务的服务调用回调方法实现可以为同一个。
+            xlinkMqttClient.setServiceInvokeHandler(request -> {
+                log.info("云平台远程服务调用，{}", request);
 
-                    //构建应答码
-                    String code = "200";
-                    //构建应答包输出参数
-                    Map<String, Object> output = new HashMap<>();
+                //得到服务调用的设备ID
+                int deviceId = request.getDeviceId();
+                //得到服务调用的服务名
+                String serviceName = request.getServiceName();
+                //得到服务调用的输入参数
+                Map<String, Object> input = request.getInput();
 
-                    try {
-                        Device device = context.getDevice(deviceId);
-                        Service service = device.getServiceX(serviceName);
-                        String type = service.getDestParamType();
-                        Encodable converted = null;
+                //构建应答码
+                String code = "200";
+                //构建应答包输出参数
+                Map<String, Object> output = new HashMap<>();
 
-                        if (service.getValueConverter() != null && service.getValueConverter().trim().length() > 0) {
+                try {
+                    Device device = context.getDevice(deviceId);
+                    Service service = device.getServiceX(serviceName);
+                    String type = service.getDestParamType();
+                    Encodable converted = null;
 
-                        } else if (service.getValueSet() != null && service.getValueSet().size() > 0) {
-                            String s = null;
-                            if (service.getSrcParam() == null || service.getSrcParam().size() == 0) {
-                                s = service.getValueX(null).getDest();
-                            } else {
+                    if (service.getValueConverter() != null && service.getValueConverter().trim().length() > 0) {
 
-                            }
-
-                            if (type.equals("BinaryPV")) {
-                                converted = BinaryPV.forName(s);
-                            }
+                    } else if (service.getValueSet() != null && service.getValueSet().size() > 0) {
+                        String s = null;
+                        if (service.getSrcParam() == null || service.getSrcParam().size() == 0) {
+                            s = service.getValueX(null).getDest();
                         } else {
 
                         }
 
-                        log.info("写物理设备[{}]对象的Present Value属性值：{}", service.getOid(), converted);
-                        RequestUtils.writePresentValue(localDevice, remoteDevice, service.getOid(), converted);
+                        if (type.equals("BinaryPV")) {
+                            converted = BinaryPV.forName(s);
+                        }
+                    } else {
 
-                        code = "200";
-                        output.put("code", "SUCCESS");
-                        output.put("message", "服务调用成功");
-                    } catch (UnknownDevice | UnknownService | UnknownValue unknown) {
-                        log.warn(unknown.getMessage());
-                        code = "400";
-                        output.put("code", unknown.getCode());
-                        output.put("message", "服务调用失败，" + unknown.getMessage());
-                    } catch (Exception e) {
-                        log.warn("写物理设备属性错误", e);
-                        code = "500";
-                        output.put("code", "ERROR");
-                        output.put("message", "服务调用失败，写物理设备属性错误");
                     }
 
-                    //构建应答包
-                    ServiceInvokeResponse serviceInvokeResponse = new ServiceInvokeResponse(code, output);
+                    log.info("写物理设备[{}]对象的Present Value属性值：{}", service.getOid(), converted);
+                    RequestUtils.writePresentValue(localDevice, remoteDevice, service.getOid(), converted);
 
-                    log.info("远程服务调用返回：{}", serviceInvokeResponse);
+                    code = "200";
+                    output.put("code", "SUCCESS");
+                    output.put("message", "服务调用成功");
+                } catch (UnknownDevice | UnknownService | UnknownValue unknown) {
+                    log.warn(unknown.getMessage());
+                    code = "400";
+                    output.put("code", unknown.getCode());
+                    output.put("message", "服务调用失败，" + unknown.getMessage());
+                } catch (Exception e) {
+                    log.warn("写物理设备属性错误", e);
+                    code = "500";
+                    output.put("code", "ERROR");
+                    output.put("message", "服务调用失败，写物理设备属性错误");
+                }
 
-                    //通过方法返回值进行应答，如方法返回值为null，则不会应答
-                    return serviceInvokeResponse;
-                });
-            }
+                //构建应答包
+                ServiceInvokeResponse serviceInvokeResponse = new ServiceInvokeResponse(code, output);
+
+                log.info("远程服务调用返回：{}", serviceInvokeResponse);
+
+                //通过方法返回值进行应答，如方法返回值为null，则不会应答
+                return serviceInvokeResponse;
+            });
         }
     }
 

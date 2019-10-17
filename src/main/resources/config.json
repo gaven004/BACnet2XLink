@@ -3,16 +3,119 @@
   "certKey": "77e9fad9-2987-4c93-8170-da775611c437",
   "deviceEndpoint": "mqtt.xlink.cn:1883",
   "connectorType": "5764610525098608128",
-  "version" : 1,
-
+  "version": 1,
   "localDeviceNumber": 1,
   "broadcastAddress": "192.168.0.255",
   "networkPrefix": 24,
   "remoteDeviceNumber": 505528,
-
   "dataSubmitInterval": 60,
-
   "products": [
+    {
+      "id": "160002baf43a03e9160002baf43aaa01",
+      "name": "水泵",
+      "properties": [
+        {
+          "name": "mode",
+          "desc": "模式",
+          "destType": "Integer",
+          "valueSet": [
+            {
+              "value": "inactive",
+              "xvalue": 2,
+              "desc": "手动模式"
+            },
+            {
+              "value": "active",
+              "xvalue": 1,
+              "desc": "自动模式"
+            }
+          ]
+        },
+        {
+          "name": "status",
+          "desc": "运行状态",
+          "destType": "Integer",
+          "valueSet": [
+            {
+              "value": "inactive",
+              "xvalue": 2,
+              "desc": "停止"
+            },
+            {
+              "value": "active",
+              "xvalue": 1,
+              "desc": "运行"
+            }
+          ]
+        },
+        {
+          "name": "trip",
+          "desc": "过载跳闸",
+          "destType": "Integer",
+          "valueSet": [
+            {
+              "value": "inactive",
+              "xvalue": 2,
+              "desc": "正常"
+            },
+            {
+              "value": "active",
+              "xvalue": 1,
+              "desc": "跳闸"
+            }
+          ]
+        },
+        {
+          "name": "running_time",
+          "desc": "累计运行时间（小时）",
+          "destType": "Float",
+          "valueConverter": ""
+        },
+        {
+          "name": "pressure",
+          "desc": "管道压力（帕）",
+          "destType": "Float",
+          "valueConverter": ""
+        }
+      ],
+      "devices": [
+        {
+          "mac": "500100",
+          "properties": [
+            {
+              "name": "mode",
+              "desc": "模式",
+              "objectId": 500101,
+              "objectType": "binary-input"
+            },
+            {
+              "name": "status",
+              "desc": "运行状态",
+              "objectId": 500102,
+              "objectType": "binary-input"
+            },
+            {
+              "name": "trip",
+              "desc": "过载跳闸",
+              "objectId": 500103,
+              "objectType": "binary-input"
+            },
+            {
+              "name": "running_time",
+              "desc": "累计运行时间（小时）",
+              "objectId": 500105,
+              "objectType": "analog-value"
+            },
+            {
+              "name": "pressure",
+              "desc": "管道压力（帕）",
+              "objectId": 500106,
+              "objectType": "analog-value"
+            }
+          ]
+        }
+      ]
+    },
     {
       "id": "160042baf43b03e9160042baf43b7801",
       "name": "风机",

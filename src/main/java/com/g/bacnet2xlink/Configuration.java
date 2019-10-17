@@ -101,106 +101,112 @@ public class Configuration {
     void after() {
         for (Product product : products) {
             // 准备产品级的Property相关的valueMap
-            for (Property property : product.getProperties()) {
-                if (property.getValueSet() != null) {
-                    Map<String, Value> valueMap = new HashMap<>();
-                    Map<Object, Value> xValueMap = new HashMap<>();
+            if (product.getProperties() != null)
+                for (Property property : product.getProperties()) {
+                    if (property.getValueSet() != null) {
+                        Map<String, Value> valueMap = new HashMap<>();
+                        Map<Object, Value> xValueMap = new HashMap<>();
 
-                    for (Value value : property.getValueSet()) {
-                        valueMap.put(value.getValue(), value);
-                        xValueMap.put(value.getXvalue(), value);
-                    }
-
-                    property.setValueMap(valueMap);
-                    property.setXValueMap(xValueMap);
-                }
-            }
-
-            for (Event event : product.getEvents()) {
-                if (event.getMessageSet() != null) {
-                    Map<String, EventMessage> messageMap = new HashMap<>();
-
-                    for (EventMessage msg : event.getMessageSet()) {
-                        messageMap.put(msg.getValue(), msg);
-                    }
-
-                    event.setMessageMap(messageMap);
-                }
-            }
-
-            for (Service service : product.getServices()) {
-                if (service.getValueSet() != null) {
-                    Map<String, ServiceParamValue> xValueMap = new HashMap<>();
-
-                    for (ServiceParamValue value : service.getValueSet()) {
-                        if (value.getScr() != null) {
-                            xValueMap.put(value.getScr().toString(), value);
-                        } else {
-                            xValueMap.put(ServiceParamValue.NULL_SCR_KEY, value);
+                        for (Value value : property.getValueSet()) {
+                            valueMap.put(value.getValue(), value);
+                            xValueMap.put(value.getXvalue(), value);
                         }
-                    }
 
-                    service.setXValueMap(xValueMap);
+                        property.setValueMap(valueMap);
+                        property.setXValueMap(xValueMap);
+                    }
                 }
-            }
+
+            if (product.getEvents() != null)
+                for (Event event : product.getEvents()) {
+                    if (event.getMessageSet() != null) {
+                        Map<String, EventMessage> messageMap = new HashMap<>();
+
+                        for (EventMessage msg : event.getMessageSet()) {
+                            messageMap.put(msg.getValue(), msg);
+                        }
+
+                        event.setMessageMap(messageMap);
+                    }
+                }
+
+            if (product.getServices() != null)
+                for (Service service : product.getServices()) {
+                    if (service.getValueSet() != null) {
+                        Map<String, ServiceParamValue> xValueMap = new HashMap<>();
+
+                        for (ServiceParamValue value : service.getValueSet()) {
+                            if (value.getScr() != null) {
+                                xValueMap.put(value.getScr().toString(), value);
+                            } else {
+                                xValueMap.put(ServiceParamValue.NULL_SCR_KEY, value);
+                            }
+                        }
+
+                        service.setXValueMap(xValueMap);
+                    }
+                }
 
             // 根据产品定义，对每一设备设备属性、事件、服务的细项内容
             for (Device device : product.getDevices()) {
                 device.setProductId(product.getId());
 
-                for (Property dest : device.getProperties()) {
-                    dest.setOid(new ObjectIdentifier(ObjectType.forName(dest.getObjectType()), dest.getObjectId()));
-                    for (Property src : product.getProperties()) {
-                        if (dest.getName().equals(src.getName())) {
-                            dest.setDestType(src.getDestType());
-                            if (src.getValueSet() != null) {
-                                dest.setValueSet(src.getValueSet());
-                                dest.setValueMap(src.getValueMap());
-                                dest.setXValueMap(src.getXValueMap());
+                if (device.getProperties() != null)
+                    for (Property dest : device.getProperties()) {
+                        dest.setOid(new ObjectIdentifier(ObjectType.forName(dest.getObjectType()), dest.getObjectId()));
+                        for (Property src : product.getProperties()) {
+                            if (dest.getName().equals(src.getName())) {
+                                dest.setDestType(src.getDestType());
+                                if (src.getValueSet() != null) {
+                                    dest.setValueSet(src.getValueSet());
+                                    dest.setValueMap(src.getValueMap());
+                                    dest.setXValueMap(src.getXValueMap());
+                                }
+                                if (src.getValueConverter() != null && src.getValueConverter().trim().length() > 0) {
+                                    dest.setValueConverter(src.getValueConverter());
+                                }
+                                break;
                             }
-                            if (src.getValueConverter() != null && src.getValueConverter().trim().length() > 0) {
-                                dest.setValueConverter(src.getValueConverter());
-                            }
-                            break;
                         }
                     }
-                }
 
-                for (Event dest : device.getEvents()) {
-                    dest.setCovPid(PropertyIdentifier.forName(dest.getCovProperty()));
-                    for (Event src : product.getEvents()) {
-                        if (dest.getName().equals(src.getName())) {
-                            dest.setType(src.getType());
-                            if (src.getMessageSet() != null) {
-                                dest.setMessageSet(src.getMessageSet());
-                                dest.setMessageMap(src.getMessageMap());
+                if (device.getEvents() != null)
+                    for (Event dest : device.getEvents()) {
+                        dest.setCovPid(PropertyIdentifier.forName(dest.getCovProperty()));
+                        for (Event src : product.getEvents()) {
+                            if (dest.getName().equals(src.getName())) {
+                                dest.setType(src.getType());
+                                if (src.getMessageSet() != null) {
+                                    dest.setMessageSet(src.getMessageSet());
+                                    dest.setMessageMap(src.getMessageMap());
+                                }
+                                break;
                             }
-                            break;
                         }
                     }
-                }
 
-                for (Service dest : device.getServices()) {
-                    dest.setOid(new ObjectIdentifier(ObjectType.forName(dest.getObjectType()), dest.getObjectId()));
-                    for (Service src : product.getServices()) {
-                        if (dest.getName().equals(src.getName())) {
-                            if (src.getSrcParam() != null) {
-                                dest.setSrcParam(src.getSrcParam());
+                if (device.getServices() != null)
+                    for (Service dest : device.getServices()) {
+                        dest.setOid(new ObjectIdentifier(ObjectType.forName(dest.getObjectType()), dest.getObjectId()));
+                        for (Service src : product.getServices()) {
+                            if (dest.getName().equals(src.getName())) {
+                                if (src.getSrcParam() != null) {
+                                    dest.setSrcParam(src.getSrcParam());
+                                }
+                                if (src.getDestParamType() != null && src.getDestParamType().trim().length() > 0) {
+                                    dest.setDestParamType(src.getDestParamType());
+                                }
+                                if (src.getValueSet() != null) {
+                                    dest.setValueSet(src.getValueSet());
+                                    dest.setXValueMap(src.getXValueMap());
+                                }
+                                if (src.getValueConverter() != null && src.getValueConverter().trim().length() > 0) {
+                                    dest.setValueConverter(src.getValueConverter());
+                                }
+                                break;
                             }
-                            if (src.getDestParamType() != null && src.getDestParamType().trim().length() > 0) {
-                                dest.setDestParamType(src.getDestParamType());
-                            }
-                            if (src.getValueSet() != null) {
-                                dest.setValueSet(src.getValueSet());
-                                dest.setXValueMap(src.getXValueMap());
-                            }
-                            if (src.getValueConverter() != null && src.getValueConverter().trim().length() > 0) {
-                                dest.setValueConverter(src.getValueConverter());
-                            }
-                            break;
                         }
                     }
-                }
 
                 List<ObjectIdentifier> oids = new ArrayList<>();
                 Map<ObjectIdentifier, Property> propertyMap = new HashMap<>();

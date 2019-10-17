@@ -89,7 +89,7 @@ public class MyDeviceEventAdapter extends DeviceEventAdapter {
                     pushData.put("message", es.toString());
                 }
 
-                XlinkCmMqttClient xlinkClient = context.getXlinkClient(device.getProductId());
+                XlinkCmMqttClient xlinkClient = context.getXlinkCmMqttClient();
                 log.info("发布事件[deviceId: {}, event: {}, data: {}]", device.getXDeviceId(), eventName, pushData);
                 xlinkClient.publishEvent(device.getXDeviceId(), cfg.getVersion(), eventName, pushData, new Date());
             } catch (UnknownDevice | UnknownEvent | UnknownEventMessage unknown) {

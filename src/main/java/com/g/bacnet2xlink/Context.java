@@ -12,9 +12,9 @@ import com.g.bacnet2xlink.exception.UnknownDevice;
 
 public class Context {
     /**
-     * Xagent客户端Map，以productId为key
+     * Xagent客户端，单例
      */
-    private Map<String, XlinkCmMqttClient> xlinkCmMqttClientMap = new ConcurrentHashMap<>(64);
+    private XlinkCmMqttClient xlinkCmMqttClient;
 
     /**
      * 在应用初始化、云平台登录后，保存所有正常的设备，以云平台登录后返回的xlinkDeviceId为key
@@ -29,30 +29,12 @@ public class Context {
     /**
      * Xagent客户端相关方法
      */
-    public void addXlinkClient(String key, XlinkCmMqttClient client) {
-        xlinkCmMqttClientMap.put(key, client);
+    public XlinkCmMqttClient getXlinkCmMqttClient() {
+        return xlinkCmMqttClient;
     }
 
-    public void removeXlinkClient(String key) {
-        xlinkCmMqttClientMap.remove(key);
-    }
-
-    public void clearXlinkClientMap() {
-        xlinkCmMqttClientMap.clear();
-    }
-
-    public Collection<XlinkCmMqttClient> getAllXlinkClient() {
-        return xlinkCmMqttClientMap.values();
-    }
-
-    /**
-     * 根据productId，获取对应的XlinkCmMqttClient
-     *
-     * @param key productId
-     * @return
-     */
-    public XlinkCmMqttClient getXlinkClient(String key) {
-        return xlinkCmMqttClientMap.get(key);
+    public void setXlinkCmMqttClient(XlinkCmMqttClient xlinkCmMqttClient) {
+        this.xlinkCmMqttClient = xlinkCmMqttClient;
     }
 
     /**

@@ -46,9 +46,9 @@ public class DataAcquisitionTask implements Runnable {
             if (lock.tryLock(10, TimeUnit.SECONDS)) {
                 boolean error = false;
 
-                for (Product product : cfg.getProducts()) {
-                    XlinkCmMqttClient xlinkMqttClient = context.getXlinkClient(product.getId());
+                XlinkCmMqttClient xlinkMqttClient = context.getXlinkCmMqttClient();
 
+                for (Product product : cfg.getProducts()) {
                     for (Device device : product.getDevices()) {
                         log.info("读取设备[id: {}, mac: {}]数值：", device.getXDeviceId(), device.getMac());
 
