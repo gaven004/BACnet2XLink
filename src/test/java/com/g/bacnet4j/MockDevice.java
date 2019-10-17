@@ -27,42 +27,42 @@ public class MockDevice {
             LocalDevice device = new LocalDevice(505528, new DefaultTransport(network)).initialize();
 
             // 风机
-            BACnetObject obj = new BACnetObject(device, ObjectType.forName("binary-input"), 3000229, "mode");
+            BACnetObject obj = new BACnetObject(device, ObjectType.forName("binary-input"), 3000229, "fan-mode");
             obj.writePropertyInternal(PropertyIdentifier.presentValue, BinaryPV.active);
             device.addObject(obj);
 
-            obj = new BACnetObject(device, ObjectType.forName("binary-input"), 3000227, "status");
+            obj = new BACnetObject(device, ObjectType.forName("binary-input"), 3000227, "fan-status");
             obj.writePropertyInternal(PropertyIdentifier.presentValue, BinaryPV.active);
             device.addObject(obj);
 
-            obj = new BACnetObject(device, ObjectType.forName("binary-input"), 3000228, "trip");
+            obj = new BACnetObject(device, ObjectType.forName("binary-input"), 3000228, "fan-trip");
             obj.writePropertyInternal(PropertyIdentifier.presentValue, BinaryPV.active);
             device.addObject(obj);
 
-            obj = new BACnetObject(device, ObjectType.forName("analog-value"), 3000238, "running_time");
+            obj = new BACnetObject(device, ObjectType.forName("analog-value"), 3000238, "fan-running_time");
             obj.writePropertyInternal(PropertyIdentifier.presentValue, new Real(uptime));
             device.addObject(obj);
             new Timer().schedule(new UptimeCounter(uptime, 1, obj), 60 * 1000, 60 * 1000);
 
             // 水泵
-            obj = new BACnetObject(device, ObjectType.forName("binary-input"), 5001001, "mode");
+            obj = new BACnetObject(device, ObjectType.forName("binary-input"), 500101, "pump-mode");
             obj.writePropertyInternal(PropertyIdentifier.presentValue, BinaryPV.active);
             device.addObject(obj);
 
-            obj = new BACnetObject(device, ObjectType.forName("binary-input"), 5001002, "status");
+            obj = new BACnetObject(device, ObjectType.forName("binary-input"), 500102, "pump-status");
             obj.writePropertyInternal(PropertyIdentifier.presentValue, BinaryPV.active);
             device.addObject(obj);
 
-            obj = new BACnetObject(device, ObjectType.forName("binary-input"), 5001003, "trip");
+            obj = new BACnetObject(device, ObjectType.forName("binary-input"), 500103, "pump-trip");
             obj.writePropertyInternal(PropertyIdentifier.presentValue, BinaryPV.active);
             device.addObject(obj);
 
-            obj = new BACnetObject(device, ObjectType.forName("analog-value"), 5001005, "running_time");
+            obj = new BACnetObject(device, ObjectType.forName("analog-value"), 500105, "pump-running_time");
             obj.writePropertyInternal(PropertyIdentifier.presentValue, new Real(uptime));
             device.addObject(obj);
             new Timer().schedule(new UptimeCounter(uptime, 1, obj), 60 * 1000, 60 * 1000);
 
-            obj = new BACnetObject(device, ObjectType.forName("analog-value"), 5001006, "running_time");
+            obj = new BACnetObject(device, ObjectType.forName("analog-value"), 500106, "pump-running_time");
             obj.writePropertyInternal(PropertyIdentifier.presentValue, new Real(random.nextFloat()));
             device.addObject(obj);
 
