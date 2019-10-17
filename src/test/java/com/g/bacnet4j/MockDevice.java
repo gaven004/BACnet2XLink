@@ -136,6 +136,11 @@ public class MockDevice {
             obj.writePropertyInternal(PropertyIdentifier.presentValue, new Real(random.nextFloat()));
             device.addObject(obj);
 
+            // 电梯
+            obj = new BACnetObject(device, ObjectType.forName("analog-value"), 500304, "elevator-current_floor");
+            obj.writePropertyInternal(PropertyIdentifier.presentValue, new Real(random.nextInt()));
+            device.addObject(obj);
+
 
 
             System.out.println("Device is ready!");
