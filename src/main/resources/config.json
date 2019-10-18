@@ -525,13 +525,13 @@
           "name": "up_down_status",
           "desc": "上下行状态",
           "destType": "Integer",
-          "valueConverter": ""
+          "valueConverter": "com.g.bacnet2xlink.converter.ElevatorUpDownStatusConverter"
         },
         {
           "name": "device_status",
           "desc": "运行状态",
           "destType": "Integer",
-          "valueConverter": ""
+          "valueConverter": "com.g.bacnet2xlink.converter.ElevatorDeviceStatusConverter"
         },
         {
           "name": "device_type",
@@ -562,6 +562,38 @@
               "desc": "所处楼层",
               "objectId": 500304,
               "objectType": "analog-value"
+            },
+            {
+              "objectId": 500320,
+              "objectType": "binary-value"
+            },
+            {
+              "objectId": 500321,
+              "objectType": "binary-value"
+            },
+            {
+              "objectId": 500322,
+              "objectType": "binary-value"
+            },
+            {
+              "objectId": 500323,
+              "objectType": "binary-value"
+            },
+            {
+              "objectId": 500324,
+              "objectType": "binary-value"
+            },
+            {
+              "objectId": 500325,
+              "objectType": "binary-value"
+            },
+            {
+              "objectId": 500326,
+              "objectType": "binary-value"
+            },
+            {
+              "objectId": 500327,
+              "objectType": "binary-value"
             }
           ]
         }

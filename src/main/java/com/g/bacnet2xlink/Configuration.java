@@ -3,10 +3,7 @@ package com.g.bacnet2xlink;
 import java.io.IOException;
 import java.io.InputStream;
 import java.nio.charset.StandardCharsets;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 import com.alibaba.fastjson.JSON;
 import com.serotonin.bacnet4j.type.enumerated.ObjectType;
@@ -16,6 +13,7 @@ import lombok.Data;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.g.bacnet2xlink.converter.MultiValueConverter;
 import com.g.bacnet2xlink.definition.*;
 
 @Data
@@ -58,7 +56,7 @@ public class Configuration {
      * @param name 资源文件名
      * @return 系统配置
      */
-    public static Configuration fromResource(String name) throws IOException {
+    public static Configuration fromResource(String name) throws IOException, ClassNotFoundException {
         InputStream in = null;
 
         try {
@@ -98,10 +96,11 @@ public class Configuration {
     /**
      * 整理数据，构建相关map
      */
-    void after() {
+    void after() throws ClassNotFoundException {
         for (Product product : products) {
             // 准备产品级的Property相关的valueMap
-            if (product.getProperties() != null)
+            if (product.getProperties() != null) {
+                ArrayList<Property> cproperties = new ArrayList<>();
                 for (Property property : product.getProperties()) {
                     if (property.getValueSet() != null) {
                         Map<String, Value> valueMap = new HashMap<>();
@@ -115,7 +114,21 @@ public class Configuration {
                         property.setValueMap(valueMap);
                         property.setXValueMap(xValueMap);
                     }
+
+                    if (property.getValueConverter() != null && property.getValueConverter().trim().length() > 0) {
+                        Optional<Class> opt = Optional.of(Class.forName(property.getValueConverter()));
+                        opt.ifPresent(clz -> {
+                            if (MultiValueConverter.class.isAssignableFrom(clz)) {
+                                cproperties.add(property);
+                            }
+                        });
+                    }
                 }
+
+                if (!cproperties.isEmpty()) {
+                    product.setCproperties(cproperties);
+                }
+            }
 
             if (product.getEvents() != null)
                 for (Event event : product.getEvents()) {
@@ -150,25 +163,27 @@ public class Configuration {
             // 根据产品定义，对每一设备设备属性、事件、服务的细项内容
             for (Device device : product.getDevices()) {
                 device.setProductId(product.getId());
+                device.setCproperties(product.getCproperties());
 
                 if (device.getProperties() != null)
                     for (Property dest : device.getProperties()) {
                         if (!"constant".equals(dest.getObjectType()))
                             dest.setOid(new ObjectIdentifier(ObjectType.forName(dest.getObjectType()), dest.getObjectId()));
-                        for (Property src : product.getProperties()) {
-                            if (dest.getName().equals(src.getName())) {
-                                dest.setDestType(src.getDestType());
-                                if (src.getValueSet() != null) {
-                                    dest.setValueSet(src.getValueSet());
-                                    dest.setValueMap(src.getValueMap());
-                                    dest.setXValueMap(src.getXValueMap());
+                        if (dest.getName() != null && dest.getName().trim().length() > 0)
+                            for (Property src : product.getProperties()) {
+                                if (dest.getName().equals(src.getName())) {
+                                    dest.setDestType(src.getDestType());
+                                    if (src.getValueSet() != null) {
+                                        dest.setValueSet(src.getValueSet());
+                                        dest.setValueMap(src.getValueMap());
+                                        dest.setXValueMap(src.getXValueMap());
+                                    }
+                                    if (src.getValueConverter() != null && src.getValueConverter().trim().length() > 0) {
+                                        dest.setValueConverter(src.getValueConverter());
+                                    }
+                                    break;
                                 }
-                                if (src.getValueConverter() != null && src.getValueConverter().trim().length() > 0) {
-                                    dest.setValueConverter(src.getValueConverter());
-                                }
-                                break;
                             }
-                        }
                     }
 
                 if (device.getEvents() != null)
@@ -218,8 +233,10 @@ public class Configuration {
                         ObjectIdentifier oid = new ObjectIdentifier(ObjectType.forName(property.getObjectType()), property.getObjectId());
                         oids.add(oid);
                         propertyMap.put(oid, property);
-                        xPropertyMap.put(property.getName(), property);
+                        if (property.getName() != null && property.getName().trim().length() > 0)
+                            xPropertyMap.put(property.getName(), property);
                     } else {
+                        // 常量属性不读取设备值
                         String type = property.getDestType();
                         Object value;
                         if (type.equals("Integer")) {

@@ -60,7 +60,7 @@ public class DataAcquisitionTask implements Runnable {
                              * 好处是其中一个出错，也不干扰其它
                              * 但遇到断网等整体异常的情况，则会在所有设备上报失败后才会重新初始化
                              */
-                            DataAcquisitionHelper.readPresentValues(ld, rd, device, attributes, log);
+                            DataAcquisitionHelper.readPresentValues(context, ld, rd, device, attributes, log);
                             log.info("上报设备数据：{}", attributes);
                             xlinkMqttClient.publishAttribute(device.getXDeviceId(), cfg.getVersion(), attributes, new Date());
                         } catch (UnknownDevice | UnknownProperty | UnknownValue unknown) {

@@ -21,6 +21,7 @@ public class Product {
     private String desc;
 
     private List<Property> properties;
+    private List<Property> cproperties;
     private List<Event> events;
     private List<Service> services; // 用于XlinkCmMqttClient初始化进注册服务
 

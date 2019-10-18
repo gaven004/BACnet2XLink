@@ -40,10 +40,7 @@ import org.slf4j.LoggerFactory;
 import xlink.cm.message.DeviceLoginResultMessage;
 import xlink.cm.message.type.DeviceLoginRetCodeType;
 
-import com.g.bacnet2xlink.definition.Device;
-import com.g.bacnet2xlink.definition.Event;
-import com.g.bacnet2xlink.definition.Product;
-import com.g.bacnet2xlink.definition.Service;
+import com.g.bacnet2xlink.definition.*;
 import com.g.bacnet2xlink.exception.UnknownDevice;
 import com.g.bacnet2xlink.exception.UnknownProperty;
 import com.g.bacnet2xlink.exception.UnknownService;
@@ -82,6 +79,8 @@ public class Main {
 
         // 注册退出钩子
         me.addShutdownHook();
+
+        me.buildConverters();
 
         me.initLocalDevice();
         me.initRemoteDevice();
@@ -127,6 +126,28 @@ public class Main {
                 log.info(String.format("\t%s = %s", opr.getPropertyIdentifier().toString(), pvs.getNoErrorCheck(opr)));
             }
         }
+    }
+
+    private void buildConverters() {
+        try {
+            log.info("构建转换器...");
+            for (Product product : cfg.getProducts()) {
+                if (product.getProperties() != null) {
+                    for (Property property : product.getProperties()) {
+                        String clzName = property.getValueConverter();
+                        if (clzName != null && clzName.trim().length() > 0 && context.getConverter(clzName) == null) {
+                            Object converter = Class.forName(clzName).newInstance();
+                            context.addConverter(clzName, converter);
+                        }
+                    }
+                }
+            }
+        } catch (Exception e) {
+            log.error("构建转换器失败，请配置是否正确", e);
+            log.error("退出系统！！！");
+            System.exit(1);
+        }
+
     }
 
     private void initXlinkCmMqttClient() {
@@ -255,7 +276,7 @@ public class Main {
                 try {
                     Device device = context.getDevice(deviceId);
                     log.info("读取设备[{}]数值：", device.getMac());
-                    DataAcquisitionHelper.readPresentValues(localDevice, remoteDevice, device, attributes, log);
+                    DataAcquisitionHelper.readPresentValues(context, localDevice, remoteDevice, device, attributes, log);
                     code = "200";
                 } catch (UnknownDevice unknown) {
                     log.warn(unknown.getMessage());

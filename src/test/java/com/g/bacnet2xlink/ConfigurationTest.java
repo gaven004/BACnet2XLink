@@ -24,6 +24,8 @@ public class ConfigurationTest {
             System.out.println(cfg);
         } catch (IOException e) {
             e.printStackTrace();
+        } catch (ClassNotFoundException e) {
+            e.printStackTrace();
         }
     }
 }

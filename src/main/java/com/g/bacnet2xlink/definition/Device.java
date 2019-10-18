@@ -27,6 +27,7 @@ public class Device {
     private int xDeviceId; // 云平台登录后返回的设备ID
 
     private List<Property> properties;
+    private List<Property> cproperties;
     private List<ObjectIdentifier> oids;
     private List<Event> events;
     private List<Service> services;
@@ -42,6 +43,7 @@ public class Device {
 
     /**
      * 根据云平台的属性，查对应物理设备的对象
+     * 在一对一的情况下才有实际意义
      *
      * @param name 云平台属性
      * @return
@@ -57,6 +59,7 @@ public class Device {
 
     /**
      * 根据物理设备的对象ID，查对应对象定义
+     * 在一对一的情况下才有实际意义
      *
      * @param oid 物理设备的对象ID
      * @return

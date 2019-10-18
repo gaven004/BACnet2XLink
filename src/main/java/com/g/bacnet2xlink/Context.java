@@ -27,6 +27,19 @@ public class Context {
     private Map<ObjectIdentifier, Device> monitoredDeviceMap = new ConcurrentHashMap<>(512);
 
     /**
+     * 转换器
+     */
+    private Map<String, Object> converterMap = new ConcurrentHashMap<>();
+
+    public void addConverter(String key, Object converter) {
+        converterMap.put(key, converter);
+    }
+
+    public Object getConverter(String key) {
+        return converterMap.get(key);
+    }
+
+    /**
      * Xagent客户端相关方法
      */
     public XlinkCmMqttClient getXlinkCmMqttClient() {
