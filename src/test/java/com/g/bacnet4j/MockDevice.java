@@ -141,7 +141,69 @@ public class MockDevice {
             obj.writePropertyInternal(PropertyIdentifier.presentValue, new Real(random.nextInt()));
             device.addObject(obj);
 
+            obj = new BACnetObject(device, ObjectType.forName("binary-input"), 500320, "elevator-down");
+            obj.writePropertyInternal(PropertyIdentifier.presentValue, BinaryPV.inactive);
+            device.addObject(obj);
 
+            obj = new BACnetObject(device, ObjectType.forName("binary-input"), 500321, "elevator-up");
+            obj.writePropertyInternal(PropertyIdentifier.presentValue, BinaryPV.inactive);
+            device.addObject(obj);
+
+            obj = new BACnetObject(device, ObjectType.forName("binary-input"), 500322, "elevator-in_service");
+            obj.writePropertyInternal(PropertyIdentifier.presentValue, BinaryPV.active);
+            device.addObject(obj);
+
+            obj = new BACnetObject(device, ObjectType.forName("binary-input"), 500323, "elevator-inspection");
+            obj.writePropertyInternal(PropertyIdentifier.presentValue, BinaryPV.inactive);
+            device.addObject(obj);
+
+            obj = new BACnetObject(device, ObjectType.forName("binary-input"), 500324, "elevator-out_of_service");
+            obj.writePropertyInternal(PropertyIdentifier.presentValue, BinaryPV.inactive);
+            device.addObject(obj);
+
+            obj = new BACnetObject(device, ObjectType.forName("binary-input"), 500325, "elevator-parking");
+            obj.writePropertyInternal(PropertyIdentifier.presentValue, BinaryPV.inactive);
+            device.addObject(obj);
+
+            obj = new BACnetObject(device, ObjectType.forName("binary-input"), 500326, "elevator-fireman_control");
+            obj.writePropertyInternal(PropertyIdentifier.presentValue, BinaryPV.inactive);
+            device.addObject(obj);
+
+            obj = new BACnetObject(device, ObjectType.forName("binary-input"), 500327, "elevator-fire_operation");
+            obj.writePropertyInternal(PropertyIdentifier.presentValue, BinaryPV.inactive);
+            device.addObject(obj);
+
+            obj = new BACnetObject(device, ObjectType.forName("binary-input"), 500330, "elevator-parallel_operation");
+            obj.writePropertyInternal(PropertyIdentifier.presentValue, BinaryPV.inactive);
+            device.addObject(obj);
+
+            obj = new BACnetObject(device, ObjectType.forName("binary-input"), 500331, "elevator-group_mode_in_normal");
+            obj.writePropertyInternal(PropertyIdentifier.presentValue, BinaryPV.inactive);
+            device.addObject(obj);
+
+            obj = new BACnetObject(device, ObjectType.forName("binary-input"), 500332, "elevator-power_in_normal");
+            obj.writePropertyInternal(PropertyIdentifier.presentValue, BinaryPV.active);
+            device.addObject(obj);
+
+            obj = new BACnetObject(device, ObjectType.forName("binary-input"), 500333, "elevator-car_door_closed");
+            obj.writePropertyInternal(PropertyIdentifier.presentValue, BinaryPV.inactive);
+            device.addObject(obj);
+
+            obj = new BACnetObject(device, ObjectType.forName("binary-input"), 500334, "elevator-self_power_supply");
+            obj.writePropertyInternal(PropertyIdentifier.presentValue, BinaryPV.inactive);
+            device.addObject(obj);
+
+            obj = new BACnetObject(device, ObjectType.forName("binary-input"), 500335, "elevator-stopped");
+            obj.writePropertyInternal(PropertyIdentifier.presentValue, BinaryPV.inactive);
+            device.addObject(obj);
+
+            obj = new BACnetObject(device, ObjectType.forName("binary-input"), 500336, "elevator-opening");
+            obj.writePropertyInternal(PropertyIdentifier.presentValue, BinaryPV.inactive);
+            device.addObject(obj);
+
+            obj = new BACnetObject(device, ObjectType.forName("binary-input"), 500337, "elevator-closing");
+            obj.writePropertyInternal(PropertyIdentifier.presentValue, BinaryPV.inactive);
+            device.addObject(obj);
 
             System.out.println("Device is ready!");
         } catch (Exception e) {
