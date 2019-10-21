@@ -130,7 +130,6 @@ public class Response {
         }
 
         // SUM＝(SA+TA+D1+D2+D3+D4+D5+D6) & FFH
-
         int sum = Helper.summary(sourceAddress, targetAddress, data1, data2, data3, data4, data5, data6);
         if (summary != (byte) (sum & Constants.MASK)) {
             throw new ValidationError();

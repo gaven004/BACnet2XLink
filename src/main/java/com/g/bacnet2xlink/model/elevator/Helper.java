@@ -10,4 +10,12 @@ public class Helper {
         }
         return (byte) (i & BitUtil.MASK);
     }
+
+    public static byte[] toByteArray(byte... bytes) {
+        byte[] array = new byte[bytes.length];
+        for (int i = 0; i < bytes.length; i++) {
+            array[i] = bytes[i];
+        }
+        return array;
+    }
 }

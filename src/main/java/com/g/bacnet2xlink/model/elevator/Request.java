@@ -40,6 +40,10 @@ public class Request {
         summary = Helper.summary(sourceAddress, targetAddress, command, data);
     }
 
+    public byte[] toByteArray() {
+        return Helper.toByteArray(startOfText, sourceAddress, targetAddress, command, data, summary, endOfText);
+    }
+
     @Override
     public String toString() {
         return BitUtil.toString(startOfText, sourceAddress, targetAddress, command, data, summary, endOfText);
