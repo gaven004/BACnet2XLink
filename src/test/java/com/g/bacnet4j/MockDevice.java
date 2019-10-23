@@ -1,18 +1,19 @@
 package com.g.bacnet4j;
 
-import java.util.Random;
-import java.util.Timer;
-import java.util.TimerTask;
-
 import com.serotonin.bacnet4j.LocalDevice;
 import com.serotonin.bacnet4j.npdu.ip.IpNetwork;
 import com.serotonin.bacnet4j.npdu.ip.IpNetworkBuilder;
 import com.serotonin.bacnet4j.obj.BACnetObject;
+import com.serotonin.bacnet4j.obj.BinaryValueObject;
 import com.serotonin.bacnet4j.transport.DefaultTransport;
 import com.serotonin.bacnet4j.type.enumerated.BinaryPV;
 import com.serotonin.bacnet4j.type.enumerated.ObjectType;
 import com.serotonin.bacnet4j.type.enumerated.PropertyIdentifier;
 import com.serotonin.bacnet4j.type.primitive.Real;
+
+import java.util.Random;
+import java.util.Timer;
+import java.util.TimerTask;
 
 public class MockDevice {
     public static void main(String[] args) {
@@ -35,9 +36,11 @@ public class MockDevice {
             obj.writePropertyInternal(PropertyIdentifier.presentValue, BinaryPV.active);
             device.addObject(obj);
 
-            obj = new BACnetObject(device, ObjectType.forName("binary-input"), 3000228, "fan-trip");
-            obj.writePropertyInternal(PropertyIdentifier.presentValue, BinaryPV.active);
-            device.addObject(obj);
+//            obj = new BACnetObject(device, ObjectType.forName("binary-input"), 3000228, "fan-trip");
+//            obj.writePropertyInternal(PropertyIdentifier.presentValue, BinaryPV.active);
+//            device.addObject(obj);
+
+            new BinaryValueObject(device, 3000228, "fan-trip", BinaryPV.inactive, false).supportCovReporting();
 
             obj = new BACnetObject(device, ObjectType.forName("analog-value"), 3000238, "fan-running_time");
             obj.writePropertyInternal(PropertyIdentifier.presentValue, new Real(uptime));
@@ -133,12 +136,12 @@ public class MockDevice {
             device.addObject(obj);
 
             obj = new BACnetObject(device, ObjectType.forName("analog-value"), 500515, "box-line_voltage_bc");
-            obj.writePropertyInternal(PropertyIdentifier.presentValue, new Real(random.nextFloat()));
+            obj.writePropertyInternal(PropertyIdentifier.presentValue, new Real(random.nextInt(10) + 375));
             device.addObject(obj);
 
             // 电梯
             obj = new BACnetObject(device, ObjectType.forName("analog-value"), 500304, "elevator-current_floor");
-            obj.writePropertyInternal(PropertyIdentifier.presentValue, new Real(random.nextInt()));
+            obj.writePropertyInternal(PropertyIdentifier.presentValue, new Real(random.nextInt(20)));
             device.addObject(obj);
 
             obj = new BACnetObject(device, ObjectType.forName("binary-value"), 500320, "elevator-down");
@@ -150,23 +153,23 @@ public class MockDevice {
             device.addObject(obj);
 
             obj = new BACnetObject(device, ObjectType.forName("binary-value"), 500322, "elevator-in_service");
-            obj.writePropertyInternal(PropertyIdentifier.presentValue, BinaryPV.active);
+            obj.writePropertyInternal(PropertyIdentifier.presentValue, BinaryPV.inactive);
             device.addObject(obj);
 
             obj = new BACnetObject(device, ObjectType.forName("binary-value"), 500323, "elevator-inspection");
             obj.writePropertyInternal(PropertyIdentifier.presentValue, BinaryPV.inactive);
             device.addObject(obj);
 
-            obj = new BACnetObject(device, ObjectType.forName("binary-value"), 500324, "elevator-out_of_service");
-            obj.writePropertyInternal(PropertyIdentifier.presentValue, BinaryPV.inactive);
-            device.addObject(obj);
+//            obj = new BACnetObject(device, ObjectType.forName("binary-value"), 500324, "elevator-out_of_service");
+//            obj.writePropertyInternal(PropertyIdentifier.presentValue, BinaryPV.inactive);
+            obj = new BinaryValueObject(device, 500324, "elevator-out_of_service", BinaryPV.inactive, false).supportCovReporting();
 
             obj = new BACnetObject(device, ObjectType.forName("binary-value"), 500325, "elevator-parking");
             obj.writePropertyInternal(PropertyIdentifier.presentValue, BinaryPV.inactive);
             device.addObject(obj);
 
             obj = new BACnetObject(device, ObjectType.forName("binary-value"), 500326, "elevator-fireman_control");
-            obj.writePropertyInternal(PropertyIdentifier.presentValue, BinaryPV.inactive);
+            obj.writePropertyInternal(PropertyIdentifier.presentValue, BinaryPV.active);
             device.addObject(obj);
 
             obj = new BACnetObject(device, ObjectType.forName("binary-value"), 500327, "elevator-fire_operation");
