@@ -146,7 +146,7 @@
                             <directory>.</directory>
                             <includes>
                                 <include>README.md</include>
-                                <include>BACnet4J license.txt</include>
+                                <include>*.txt</include>
                             </includes>
                             <filtering>false</filtering>
                         </resource>
@@ -166,11 +166,6 @@
                             </mainClass>
                         </manifest>
                     </archive>
-                    <excludes>
-                        <exclude>/config.json</exclude>
-                        <exclude>/logback.xml</exclude>
-                        <exclude>/log4j2.xml</exclude>
-                    </excludes>
                 </configuration>
             </plugin>
         </plugins>

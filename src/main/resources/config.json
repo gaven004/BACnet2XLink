@@ -186,8 +186,8 @@
           "messageSet": [
             {
               "value": "inactive",
-              "code": "overload reset",
-              "message": "过载复位"
+              "code": "reset",
+              "message": "复位"
             },
             {
               "value": "active",
@@ -534,6 +534,12 @@
           "valueConverter": "com.g.bacnet2xlink.converter.ElevatorDeviceStatusConverter"
         },
         {
+          "name": "door_status",
+          "desc": "运行状态",
+          "destType": "Integer",
+          "valueConverter": "com.g.bacnet2xlink.converter.ElevatorDoorStatusConverter"
+        },
+        {
           "name": "device_type",
           "desc": "电梯类型",
           "destType": "Integer",
@@ -544,6 +550,25 @@
           "desc": "所处楼层",
           "destType": "Integer",
           "valueConverter": ""
+        }
+      ],
+      "events": [
+        {
+          "name": "fault",
+          "type": "malfunction",
+          "desc": "电梯故障",
+          "messageSet": [
+            {
+              "value": "active",
+              "code": "reset",
+              "message": "复位"
+            },
+            {
+              "value": "inactive",
+              "code": "fault",
+              "message": "电梯故障"
+            }
+          ]
         }
       ],
       "devices": [
@@ -594,6 +619,47 @@
             {
               "objectId": 500327,
               "objectType": "binary-value"
+            },
+            {
+              "objectId": 500330,
+              "objectType": "binary-value"
+            },
+            {
+              "objectId": 500331,
+              "objectType": "binary-value"
+            },
+            {
+              "objectId": 500332,
+              "objectType": "binary-value"
+            },
+            {
+              "objectId": 500333,
+              "objectType": "binary-value"
+            },
+            {
+              "objectId": 500334,
+              "objectType": "binary-value"
+            },
+            {
+              "objectId": 500335,
+              "objectType": "binary-value"
+            },
+            {
+              "objectId": 500336,
+              "objectType": "binary-value"
+            },
+            {
+              "objectId": 500337,
+              "objectType": "binary-value"
+            }
+          ],
+          "events": [
+            {
+              "name": "fault",
+              "desc": "电梯故障",
+              "objectId": 500324,
+              "objectType": "binary-input",
+              "covProperty": "present-value"
             }
           ]
         }

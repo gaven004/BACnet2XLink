@@ -43,21 +43,22 @@ public class SubscribeCOVTask implements Runnable {
 
         for (Product product : cfg.getProducts()) {
             for (Device device : product.getDevices()) {
-                for (Event event : device.getEvents()) {
-                    log.info("订阅设备[mac: {}]对象[{} {}]属性[{}]的COV事件", device.getMac(), event.getObjectType(),
-                            event.getObjectId(), event.getCovProperty());
-                    try {
-                        ObjectIdentifier oid = new ObjectIdentifier(ObjectType.forName(event.getObjectType()),
-                                event.getObjectId());
-                        PropertyReference pr = new PropertyReference(PropertyIdentifier.forName(event.getCovProperty()));
-                        SubscribeCOVPropertyRequest req = new SubscribeCOVPropertyRequest(subscriberProcessIdentifier,
-                                oid, Boolean.TRUE, lifetime, pr, new Real(0));
-                        ld.send(rd, req).get();
-                        context.addMonitoredDevice(oid, device);
-                    } catch (BACnetException e) {
-                        log.warn("COV订阅异常", e);
+                if (device.getEvents() != null)
+                    for (Event event : device.getEvents()) {
+                        log.info("订阅设备[mac: {}]对象[{} {}]属性[{}]的COV事件", device.getMac(), event.getObjectType(),
+                                event.getObjectId(), event.getCovProperty());
+                        try {
+                            ObjectIdentifier oid = new ObjectIdentifier(ObjectType.forName(event.getObjectType()),
+                                    event.getObjectId());
+                            PropertyReference pr = new PropertyReference(PropertyIdentifier.forName(event.getCovProperty()));
+                            SubscribeCOVPropertyRequest req = new SubscribeCOVPropertyRequest(subscriberProcessIdentifier,
+                                    oid, Boolean.TRUE, lifetime, pr, new Real(0));
+                            ld.send(rd, req).get();
+                            context.addMonitoredDevice(oid, device);
+                        } catch (Exception e) {
+                            log.warn("COV订阅异常", e);
+                        }
                     }
-                }
             }
         }
 
