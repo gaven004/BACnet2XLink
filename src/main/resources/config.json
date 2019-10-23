@@ -241,7 +241,7 @@
               "name": "trip",
               "desc": "过载跳闸",
               "objectId": 3000228,
-              "objectType": "binary-input"
+              "objectType": "binary-value"
             },
             {
               "name": "running_time",
@@ -255,7 +255,7 @@
               "name": "overload",
               "desc": "过载跳闸",
               "objectId": 3000228,
-              "objectType": "binary-input",
+              "objectType": "binary-value",
               "covProperty": "present-value"
             }
           ],
@@ -658,7 +658,7 @@
               "name": "fault",
               "desc": "电梯故障",
               "objectId": 500324,
-              "objectType": "binary-input",
+              "objectType": "binary-value",
               "covProperty": "present-value"
             }
           ]
