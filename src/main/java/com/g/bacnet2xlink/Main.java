@@ -62,8 +62,6 @@ public class Main {
 
     private ScheduledExecutorService executor;
 
-    private Lock datLock = new ReentrantLock();
-
     private volatile boolean running = true;
 
     public static void main(String[] args) {
@@ -449,7 +447,7 @@ public class Main {
             final ScheduledFuture<?> scf = executor.scheduleAtFixedRate(sct, 0, subscriberLifetime, TimeUnit.SECONDS);
 
             // 启动上报线程，采集并上报数据
-            DataAcquisitionTask dat = new DataAcquisitionTask(localDevice, remoteDevice, cfg, context, datLock);
+            DataAcquisitionTask dat = new DataAcquisitionTask(localDevice, remoteDevice, cfg, context);
             final ScheduledFuture<?> daf = executor.scheduleWithFixedDelay(dat,
                     cfg.getDataSubmitInterval(), cfg.getDataSubmitInterval(), TimeUnit.SECONDS);
 

@@ -1,11 +1,8 @@
 package com.g.bacnet2xlink;
 
-import java.io.IOException;
-import java.io.InputStream;
-import java.nio.charset.StandardCharsets;
-import java.util.*;
-
 import com.alibaba.fastjson.JSON;
+import com.g.bacnet2xlink.converter.MultiValueConverter;
+import com.g.bacnet2xlink.definition.*;
 import com.serotonin.bacnet4j.type.enumerated.ObjectType;
 import com.serotonin.bacnet4j.type.enumerated.PropertyIdentifier;
 import com.serotonin.bacnet4j.type.primitive.ObjectIdentifier;
@@ -13,8 +10,11 @@ import lombok.Data;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.g.bacnet2xlink.converter.MultiValueConverter;
-import com.g.bacnet2xlink.definition.*;
+import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.io.InputStream;
+import java.nio.charset.StandardCharsets;
+import java.util.*;
 
 @Data
 public class Configuration {
@@ -64,15 +64,16 @@ public class Configuration {
         } catch (Exception ignore) {
         }
 
-        if (in == null) {
-            final String stripped = name.startsWith("/") ? name.substring(1) : null;
-
-            if (in == null) {
-                try {
-                    in = ClassLoader.getSystemResourceAsStream(stripped);
-                } catch (Exception ignore) {
-                }
+        if (in == null && name.startsWith("/")) {
+            final String stripped = name.substring(1);
+            try {
+                in = ClassLoader.getSystemResourceAsStream(stripped);
+            } catch (Exception ignore) {
             }
+        }
+
+        if (in == null) {
+            throw new FileNotFoundException();
         }
 
         try {
