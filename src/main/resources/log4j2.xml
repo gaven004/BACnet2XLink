@@ -5,7 +5,7 @@
             <PatternLayout pattern="%d{ABSOLUTE} %-5level [%t] %c{1.} - %m%n"/>
         </Console>
         <RollingFile name="RollingFile" fileName="logs/app.log"
-                     filePattern="logs/$${date:yyyy-MM}/app-%d{yyyy-MM-dd}-%i.log.gz">
+                filePattern="logs/$${date:yyyy-MM}/app-%d{yyyy-MM-dd}-%i.log.gz">
             <PatternLayout>
                 <Pattern>%d{ABSOLUTE} %-5level [%t] %c{1.} - %m%n</Pattern>
             </PatternLayout>
@@ -15,8 +15,19 @@
             </Policies>
             <DefaultRolloverStrategy max="100"/>
         </RollingFile>
+        <RollingRandomAccessFile name="XlinkLog"
+                fileName="logs/xlink.log" filePattern="logs/xlink.log.%d{yyyy-MM-dd}">
+            <PatternLayout pattern="%d{yyyy-MM-dd HH:mm:ss.SSS} %p %m%n" />
+            <Policies>
+                <TimeBasedTriggeringPolicy interval="1" modulate="true" />
+            </Policies>
+            <DefaultRolloverStrategy max="100"/>
+        </RollingRandomAccessFile>
     </Appenders>
     <Loggers>
+        <logger name="cn.xlink" level="debug" includeLocation="true" additivity="false">
+            <appender-ref ref="XlinkLog"/>
+        </logger>
         <Root level="info">
             <AppenderRef ref="Console"/>
             <AppenderRef ref="RollingFile" level="debug"/>
