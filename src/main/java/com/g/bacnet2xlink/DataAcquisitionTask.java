@@ -19,15 +19,10 @@ import java.util.Map;
 public class DataAcquisitionTask implements Runnable {
     private static final Logger log = LoggerFactory.getLogger(DataAcquisitionTask.class);
 
-    private LocalDevice ld;
-    private RemoteDevice rd;
-
     private Configuration cfg;
     private Context context;
 
-    public DataAcquisitionTask(LocalDevice ld, RemoteDevice rd, Configuration cfg, Context context) {
-        this.ld = ld;
-        this.rd = rd;
+    public DataAcquisitionTask(Configuration cfg, Context context) {
         this.cfg = cfg;
         this.context = context;
     }
@@ -39,6 +34,7 @@ public class DataAcquisitionTask implements Runnable {
         boolean error = false;
 
         XlinkCmMqttClient xlinkMqttClient = context.getXlinkCmMqttClient();
+        LocalDevice ld = context.getLocalDevice();
 
         for (Product product : cfg.getProducts()) {
             for (Device device : product.getDevices()) {
@@ -52,6 +48,7 @@ public class DataAcquisitionTask implements Runnable {
                      * 好处是其中一个出错，也不干扰其它
                      * 但遇到断网等整体异常的情况，则会在所有设备上报失败后才会重新初始化
                      */
+                    RemoteDevice rd = context.getRemoteDevice(device.getRemoteDeviceNumber());
                     DataAcquisitionHelper.readPresentValues(context, ld, rd, device, attributes, log);
                     log.info("上报设备数据：{}", attributes);
                     xlinkMqttClient.publishAttribute(device.getXDeviceId(), cfg.getVersion(), attributes, new Date());

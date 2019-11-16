@@ -1,43 +1,42 @@
 package com.g.bacnet2xlink;
 
+import cn.xlink.iot.sdk.mqtt.client.cm.XlinkCmMqttClient;
+import com.g.bacnet2xlink.definition.Device;
+import com.g.bacnet2xlink.exception.UnknownDevice;
+import com.g.bacnet2xlink.exception.UnknownRemoteDevice;
+import com.serotonin.bacnet4j.LocalDevice;
+import com.serotonin.bacnet4j.RemoteDevice;
+import com.serotonin.bacnet4j.type.primitive.ObjectIdentifier;
+
 import java.util.Collection;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
-
-import cn.xlink.iot.sdk.mqtt.client.cm.XlinkCmMqttClient;
-import com.serotonin.bacnet4j.type.primitive.ObjectIdentifier;
-
-import com.g.bacnet2xlink.definition.Device;
-import com.g.bacnet2xlink.exception.UnknownDevice;
 
 public class Context {
     /**
      * Xagent客户端，单例
      */
     private XlinkCmMqttClient xlinkCmMqttClient;
-
+    /**
+     * BACnet local device
+     */
+    private LocalDevice localDevice;
+    /**
+     * BACnet remote devices
+     */
+    private Map<Integer, RemoteDevice> remoteDeviceMap = new ConcurrentHashMap<>(16);
     /**
      * 在应用初始化、云平台登录后，保存所有正常的设备，以云平台登录后返回的xlinkDeviceId为key
      */
     private Map<Integer, Device> deviceMap = new ConcurrentHashMap<>(512);
-
     /**
      * 物理设备注册COV监听后，登记在这个表中，供COV事件触发后回查，以物理设备的对象为key
      */
     private Map<ObjectIdentifier, Device> monitoredDeviceMap = new ConcurrentHashMap<>(512);
-
     /**
      * 转换器
      */
     private Map<String, Object> converterMap = new ConcurrentHashMap<>();
-
-    public void addConverter(String key, Object converter) {
-        converterMap.put(key, converter);
-    }
-
-    public Object getConverter(String key) {
-        return converterMap.get(key);
-    }
 
     /**
      * Xagent客户端相关方法
@@ -48,6 +47,45 @@ public class Context {
 
     public void setXlinkCmMqttClient(XlinkCmMqttClient xlinkCmMqttClient) {
         this.xlinkCmMqttClient = xlinkCmMqttClient;
+    }
+
+    /**
+     * BACnet local device setter & getter
+     */
+    public LocalDevice getLocalDevice() {
+        return localDevice;
+    }
+
+    public void setLocalDevice(LocalDevice localDevice) {
+        this.localDevice = localDevice;
+    }
+
+    /**
+     * BACnet remote devices methods
+     */
+    public void addRemoteDevice(RemoteDevice device) {
+        remoteDeviceMap.put(device.getInstanceNumber(), device);
+    }
+
+    public void removeRemoteDevice(int remoteDeviceNumber) {
+        remoteDeviceMap.remove(remoteDeviceNumber);
+    }
+
+    public void clearRemoteDeviceMap() {
+        remoteDeviceMap.clear();
+    }
+
+    public Collection<RemoteDevice> getAllRemoteDevice() {
+        return remoteDeviceMap.values();
+    }
+
+    public RemoteDevice getRemoteDevice(int remoteDeviceNumber) throws UnknownRemoteDevice {
+        final RemoteDevice device = remoteDeviceMap.get(remoteDeviceNumber);
+        if (device != null) {
+            return device;
+        }
+
+        throw new UnknownRemoteDevice();
     }
 
     /**
@@ -114,5 +152,13 @@ public class Context {
         }
 
         throw new UnknownDevice();
+    }
+
+    public void addConverter(String key, Object converter) {
+        converterMap.put(key, converter);
+    }
+
+    public Object getConverter(String key) {
+        return converterMap.get(key);
     }
 }

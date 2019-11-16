@@ -1,8 +1,10 @@
 package com.g.bacnet2xlink;
 
+import com.g.bacnet2xlink.definition.Device;
+import com.g.bacnet2xlink.definition.Event;
+import com.g.bacnet2xlink.definition.Product;
 import com.serotonin.bacnet4j.LocalDevice;
 import com.serotonin.bacnet4j.RemoteDevice;
-import com.serotonin.bacnet4j.exception.BACnetException;
 import com.serotonin.bacnet4j.service.confirmed.SubscribeCOVPropertyRequest;
 import com.serotonin.bacnet4j.type.constructed.PropertyReference;
 import com.serotonin.bacnet4j.type.enumerated.ObjectType;
@@ -14,22 +16,14 @@ import com.serotonin.bacnet4j.type.primitive.UnsignedInteger;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.g.bacnet2xlink.definition.Device;
-import com.g.bacnet2xlink.definition.Event;
-import com.g.bacnet2xlink.definition.Product;
-
 public class SubscribeCOVTask implements Runnable {
     private static final Logger log = LoggerFactory.getLogger(SubscribeCOVTask.class);
 
-    private LocalDevice ld;
-    private RemoteDevice rd;
     private Configuration cfg;
     private Context context;
     private UnsignedInteger lifetime;
 
-    public SubscribeCOVTask(LocalDevice ld, RemoteDevice rd, Configuration cfg, Context context, UnsignedInteger lifetime) {
-        this.ld = ld;
-        this.rd = rd;
+    public SubscribeCOVTask(Configuration cfg, Context context, UnsignedInteger lifetime) {
         this.cfg = cfg;
         this.context = context;
         this.lifetime = lifetime;
@@ -39,6 +33,7 @@ public class SubscribeCOVTask implements Runnable {
     public void run() {
         log.info("启动COV订阅任务...");
 
+        LocalDevice ld = context.getLocalDevice();
         UnsignedInteger subscriberProcessIdentifier = new UnsignedInteger(ld.getInstanceNumber());
 
         for (Product product : cfg.getProducts()) {
@@ -53,6 +48,7 @@ public class SubscribeCOVTask implements Runnable {
                             PropertyReference pr = new PropertyReference(PropertyIdentifier.forName(event.getCovProperty()));
                             SubscribeCOVPropertyRequest req = new SubscribeCOVPropertyRequest(subscriberProcessIdentifier,
                                     oid, Boolean.TRUE, lifetime, pr, new Real(0));
+                            RemoteDevice rd = context.getRemoteDevice(device.getRemoteDeviceNumber());
                             ld.send(rd, req).get();
                             context.addMonitoredDevice(oid, device);
                         } catch (Exception e) {

@@ -22,6 +22,7 @@ import com.g.bacnet2xlink.exception.UnknownService;
 public class Device {
     private String productId;
 
+    private Integer remoteDeviceNumber;
     private String mac; // 虚拟的设备MAC，用于云平台的设备上线
 
     private int xDeviceId; // 云平台登录后返回的设备ID

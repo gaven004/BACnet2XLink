@@ -1,19 +1,12 @@
 package com.g.bacnet2xlink;
 
-import java.util.HashMap;
-import java.util.Map;
-import java.util.concurrent.Executors;
-import java.util.concurrent.ScheduledExecutorService;
-import java.util.concurrent.ScheduledFuture;
-import java.util.concurrent.TimeUnit;
-import java.util.concurrent.locks.Lock;
-import java.util.concurrent.locks.ReentrantLock;
-
 import cn.xlink.iot.sdk.XlinkMqttBuilderParams;
 import cn.xlink.iot.sdk.mqtt.client.cm.XlinkCmMqttClient;
 import cn.xlink.iot.sdk.mqtt.client.subscribe.message.GetAttributeResponse;
 import cn.xlink.iot.sdk.mqtt.client.subscribe.message.ServiceInvokeResponse;
 import cn.xlink.iot.sdk.mqtt.client.subscribe.message.SetAttributeResponse;
+import com.g.bacnet2xlink.definition.*;
+import com.g.bacnet2xlink.exception.*;
 import com.serotonin.bacnet4j.LocalDevice;
 import com.serotonin.bacnet4j.RemoteDevice;
 import com.serotonin.bacnet4j.event.DeviceEventAdapter;
@@ -40,11 +33,12 @@ import org.slf4j.LoggerFactory;
 import xlink.cm.message.DeviceLoginResultMessage;
 import xlink.cm.message.type.DeviceLoginRetCodeType;
 
-import com.g.bacnet2xlink.definition.*;
-import com.g.bacnet2xlink.exception.UnknownDevice;
-import com.g.bacnet2xlink.exception.UnknownProperty;
-import com.g.bacnet2xlink.exception.UnknownService;
-import com.g.bacnet2xlink.exception.UnknownValue;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.concurrent.Executors;
+import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.ScheduledFuture;
+import java.util.concurrent.TimeUnit;
 
 public class Main {
     private static final Logger log = LoggerFactory.getLogger(Main.class);
@@ -55,14 +49,11 @@ public class Main {
 
     private static Configuration cfg = null;
 
-    private Context context = new Context();
+    private static Context context = new Context();
 
-    private LocalDevice localDevice = null;
-    private RemoteDevice remoteDevice = null;
+    private static ScheduledExecutorService executor;
 
-    private ScheduledExecutorService executor;
-
-    private volatile boolean running = true;
+    private static volatile boolean running = true;
 
     public static void main(String[] args) {
         log.info("");
@@ -72,27 +63,24 @@ public class Main {
         // 读系统配置
         config();
 
-        // 初始化
-        Main me = new Main();
-
         // 注册退出钩子
-        me.addShutdownHook();
+        addShutdownHook();
 
-        me.buildConverters();
+        buildConverters();
 
-        me.initLocalDevice();
-        me.initRemoteDevice();
-        me.initThreadPool();
+        initLocalDevice();
+        initRemoteDevice();
+        initThreadPool();
 
-        me.initXlinkCmMqttClient();
-        me.loginXlink();
+        initXlinkCmMqttClient();
+        loginXlink();
 
-        me.setAttributeCallback();
-        me.getAttributeCallback();
-        me.serviceInvokeCallback();
+        setAttributeCallback();
+        getAttributeCallback();
+        serviceInvokeCallback();
 
         // 运行任务
-        me.runTask();
+        runTask();
     }
 
     private static void config() {
@@ -126,7 +114,7 @@ public class Main {
         }
     }
 
-    private void buildConverters() {
+    private static void buildConverters() {
         try {
             log.info("构建转换器...");
             for (Product product : cfg.getProducts()) {
@@ -148,7 +136,7 @@ public class Main {
 
     }
 
-    private void initXlinkCmMqttClient() {
+    private static void initXlinkCmMqttClient() {
         log.info("初始化xlinkMqttClient...");
 
         // 构造器配置
@@ -186,7 +174,7 @@ public class Main {
         }
     }
 
-    private void loginXlink() {
+    private static void loginXlink() {
         // 在平台登录上线，并得到返回
         log.info("设备平台上线...");
 
@@ -227,7 +215,7 @@ public class Main {
      * <p>
      * 目前不支持对协议中的设备属性写入
      */
-    private void setAttributeCallback() {
+    private static void setAttributeCallback() {
         log.info("监听服务端的属性设置请求");
 
         XlinkCmMqttClient xlinkMqttClient = context.getXlinkCmMqttClient();
@@ -253,7 +241,7 @@ public class Main {
     /**
      * 监听服务端的属性获取请求，并应答服务端
      */
-    private void getAttributeCallback() {
+    private static void getAttributeCallback() {
         log.info("监听服务端的属性获取请求");
 
         XlinkCmMqttClient xlinkMqttClient = context.getXlinkCmMqttClient();
@@ -274,6 +262,9 @@ public class Main {
                 try {
                     Device device = context.getDevice(deviceId);
                     log.info("读取设备[{}]数值：", device.getMac());
+
+                    LocalDevice localDevice = context.getLocalDevice();
+                    RemoteDevice remoteDevice = context.getRemoteDevice(device.getRemoteDeviceNumber());
                     DataAcquisitionHelper.readPresentValues(context, localDevice, remoteDevice, device, attributes, log);
                     code = "200";
                 } catch (UnknownDevice unknown) {
@@ -301,7 +292,7 @@ public class Main {
     /**
      * 监听服务端的服务调用下发，并应答服务端
      */
-    private void serviceInvokeCallback() {
+    private static void serviceInvokeCallback() {
         log.info("监听服务端的服务调用下发");
 
         XlinkCmMqttClient xlinkMqttClient = context.getXlinkCmMqttClient();
@@ -347,6 +338,8 @@ public class Main {
                     }
 
                     log.info("写物理设备[{}]对象的Present Value属性值：{}", service.getOid(), converted);
+                    LocalDevice localDevice = context.getLocalDevice();
+                    RemoteDevice remoteDevice = context.getRemoteDevice(device.getRemoteDeviceNumber());
                     RequestUtils.writePresentValue(localDevice, remoteDevice, service.getOid(), converted);
 
                     code = "200";
@@ -375,17 +368,20 @@ public class Main {
         }
     }
 
-    private void initLocalDevice() {
+    private static void initLocalDevice() {
         IpNetworkBuilder builder;
         IpNetwork network;
+        LocalDevice localDevice = null;
         int deviceNumber = ObjectIdentifier.UNINITIALIZED;
 
         while (localDevice == null) {
             try {
                 log.info("初始化localDevice...");
+
                 if (cfg.getLocalDeviceNumber() != null) {
                     deviceNumber = cfg.getLocalDeviceNumber();
                 }
+
                 builder = new IpNetworkBuilder();
                 if (StringUtils.isNotBlank(cfg.getLocalAddress())) {
                     builder.withLocalBindAddress(cfg.getLocalAddress());
@@ -395,10 +391,15 @@ public class Main {
                 }
                 builder.withBroadcast(cfg.getBroadcastAddress(), cfg.getNetworkPrefix());
                 network = builder.build();
+
                 localDevice = new LocalDevice(deviceNumber, new DefaultTransport(network));
                 localDevice.initialize();
+
+                context.setLocalDevice(localDevice);
+
                 final DeviceEventAdapter listener = new MyDeviceEventAdapter(cfg, context);
                 localDevice.getEventHandler().addListener(listener);
+
                 log.info("初始化localDevice成功：{}", localDevice);
             } catch (Exception e) {
                 log.error("初始化localDevice失败", e);
@@ -415,39 +416,35 @@ public class Main {
         }
     }
 
-    private void initRemoteDevice() {
-        while (remoteDevice == null) {
+    private static void initRemoteDevice() {
+        LocalDevice localDevice = context.getLocalDevice();
+
+        for (Integer deviceNumber : cfg.getRemoteDevices()) {
             try {
-                log.info("连接remoteDevice...");
-                remoteDevice = localDevice.getRemoteDeviceBlocking(cfg.getRemoteDeviceNumber(), 10000);
+                log.info("连接remoteDevice[{}]...", deviceNumber);
+                RemoteDevice remoteDevice = localDevice.getRemoteDeviceBlocking(deviceNumber, 60000);
                 getExtendedDeviceInformation(localDevice, remoteDevice);
-                log.info("连接remoteDevice成功");
+                context.addRemoteDevice(remoteDevice);
+                log.info("连接remoteDevice[{}]成功", deviceNumber);
             } catch (BACnetException e) {
-                log.error("连接remoteDevice失败", e);
-                log.error("清空localDevice缓存，1分钟后重试");
-                localDevice.clearRemoteDevices();
-                remoteDevice = null;
-                try {
-                    Thread.sleep(60000);
-                } catch (InterruptedException ex) {
-                }
+                log.error(String.format("连接remoteDevice[%d]失败", deviceNumber), e);
+                localDevice.removeCachedRemoteDevice(deviceNumber);
             }
         }
     }
 
-    private void initThreadPool() {
+    private static void initThreadPool() {
         executor = Executors.newScheduledThreadPool(4);
     }
 
-    private void runTask() {
+    private static void runTask() {
         while (running) {
             // 启动COV订阅线程
-            SubscribeCOVTask sct = new SubscribeCOVTask(localDevice, remoteDevice, cfg, context,
-                    new UnsignedInteger(subscriberLifetime * 2));
+            SubscribeCOVTask sct = new SubscribeCOVTask(cfg, context, new UnsignedInteger(subscriberLifetime * 2));
             final ScheduledFuture<?> scf = executor.scheduleAtFixedRate(sct, 0, subscriberLifetime, TimeUnit.SECONDS);
 
             // 启动上报线程，采集并上报数据
-            DataAcquisitionTask dat = new DataAcquisitionTask(localDevice, remoteDevice, cfg, context);
+            DataAcquisitionTask dat = new DataAcquisitionTask(cfg, context);
             final ScheduledFuture<?> daf = executor.scheduleWithFixedDelay(dat,
                     cfg.getDataSubmitInterval(), cfg.getDataSubmitInterval(), TimeUnit.SECONDS);
 
@@ -465,7 +462,7 @@ public class Main {
         }
     }
 
-    private void shutdown() {
+    private static void shutdown() {
         log.info("关闭定时任务和设备");
         if (executor != null) {
             executor.shutdown();
@@ -474,18 +471,18 @@ public class Main {
             } catch (InterruptedException e) {
             }
         }
-        if (localDevice != null) {
-            localDevice.terminate();
+        if (context.getLocalDevice() != null) {
+            context.getLocalDevice().terminate();
         }
     }
 
-    private void release() {
+    private static void release() {
         executor = null;
-        remoteDevice = null;
-        localDevice = null;
+        context.clearRemoteDeviceMap();
+        context.setLocalDevice(null);
     }
 
-    private void renew() {
+    private static void renew() {
         log.warn("重新初始化设备，并运行任务");
         shutdown();
         release();
@@ -497,10 +494,11 @@ public class Main {
         loginXlink();
     }
 
-    private void unsubscribeCOVEvent() {
+    private static void unsubscribeCOVEvent() {
         log.info("取消COV订阅...");
 
-        if (localDevice != null && remoteDevice != null) {
+        LocalDevice localDevice = context.getLocalDevice();
+        if (localDevice != null) {
             UnsignedInteger subscriberProcessIdentifier = new UnsignedInteger(localDevice.getInstanceNumber());
 
             for (Product product : cfg.getProducts()) {
@@ -515,8 +513,9 @@ public class Main {
                                 PropertyReference pr = new PropertyReference(PropertyIdentifier.forName(event.getCovProperty()));
                                 SubscribeCOVPropertyRequest req = new SubscribeCOVPropertyRequest(subscriberProcessIdentifier,
                                         oid, null, null, pr, null);
+                                RemoteDevice remoteDevice = context.getRemoteDevice(device.getRemoteDeviceNumber());
                                 localDevice.send(remoteDevice, req).get();
-                            } catch (BACnetException e) {
+                            } catch (BACnetException | UnknownRemoteDevice e) {
                                 log.warn("取消COV订阅异常", e);
                             }
                         }
@@ -527,7 +526,7 @@ public class Main {
         log.info("取消COV订阅任务结束");
     }
 
-    private void addShutdownHook() {
+    private static void addShutdownHook() {
         Runtime.getRuntime().addShutdownHook(new Thread() {
             @Override
             public void run() {

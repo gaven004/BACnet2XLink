@@ -38,7 +38,8 @@ public class Configuration {
     private Integer localPort; // nullable, default value: 0xBAC0 = 47808
     private String broadcastAddress; // the broadcast address for the network
     private Integer networkPrefix; // the number of bits in the local subnet.
-    private Integer remoteDeviceNumber;
+
+    private List<Integer> remoteDevices;
 
     /**
      * 系统参数
