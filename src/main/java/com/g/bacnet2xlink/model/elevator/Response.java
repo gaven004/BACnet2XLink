@@ -99,7 +99,7 @@ public class Response {
     private byte summary; // 帧校验和
     private byte endOfText; // 帧结束标志
 
-    public static Response fromByteArray(byte bytes[]) throws ValidationError {
+    public static Response fromByteArray(byte bytes[], byte address) throws ValidationError {
         if (bytes.length != 11) {
             throw new ValidationError();
         }
@@ -117,15 +117,16 @@ public class Response {
         r.summary = bytes[9]; // 帧校验和
         r.endOfText = bytes[10]; // 帧结束标志
 
-        r.validate();
+        r.validate(address);
 
         return r;
     }
 
-    public void validate() throws ValidationError {
+    public void validate(byte address) throws ValidationError {
         if (Constants.START_OF_TEXT != startOfText
                 || Constants.MASTER_ADDRESS != targetAddress
-                || Constants.END_OF_TEXT != endOfText) {
+                || Constants.END_OF_TEXT != endOfText
+                || address != sourceAddress) {
             throw new ValidationError();
         }
 

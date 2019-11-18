@@ -52,6 +52,11 @@ public class Configuration {
     private List<Product> products;
 
     /**
+     * 电梯网关定义
+     */
+    private List<ElevatorGateway> elevators;
+
+    /**
      * 从资源文件恢复系统配置
      *
      * @param name 资源文件名

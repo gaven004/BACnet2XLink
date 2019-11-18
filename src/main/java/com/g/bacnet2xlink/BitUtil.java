@@ -22,6 +22,10 @@ public final class BitUtil {
         return String.format("%08s", Integer.toBinaryString(b & MASK));
     }
 
+    public static byte toByte(int i) {
+        return (byte) (i & MASK);
+    }
+
     public static String toString(byte... bytes) {
         StringBuilder sb = new StringBuilder(bytes.length * 3);
         for (byte b : bytes) {

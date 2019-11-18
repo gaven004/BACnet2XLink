@@ -4,14 +4,13 @@
   "deviceEndpoint": "mqtt.xlink.cn:1883",
   "connectorType": "5764610525098608128",
   "version": 1,
-
   "localDeviceNumber": 1,
   "broadcastAddress": "192.168.0.255",
   "networkPrefix": 24,
-  "remoteDevices": [505528],
-
+  "remoteDevices": [
+    505528
+  ],
   "dataSubmitInterval": 60,
-
   "products": [
     {
       "id": "160002baf43a03e9160002baf43aaa01",
@@ -672,6 +671,154 @@
           ]
         }
       ]
+    }
+  ],
+  "elevators": [
+    {
+      "host": "localhost",
+      "port": 12345,
+      "targetAddress": 1,
+      "bacnetDeviceNumber": 505528,
+      "d1": {
+        "objectId": 501001,
+        "objectType": "analog-value"
+      },
+      "d2": {
+        "0": {
+          "objectId": 501020,
+          "objectType": "binary-value"
+        },
+        "1": {
+          "objectId": 501021,
+          "objectType": "binary-value"
+        },
+        "2": {
+          "objectId": 501022,
+          "objectType": "binary-value"
+        },
+        "3": {
+          "objectId": 501023,
+          "objectType": "binary-value"
+        },
+        "4": {
+          "objectId": 501024,
+          "objectType": "binary-value"
+        },
+        "5": {
+          "objectId": 501025,
+          "objectType": "binary-value"
+        },
+        "6": {
+          "objectId": 501026,
+          "objectType": "binary-value"
+        },
+        "7": {
+          "objectId": 501027,
+          "objectType": "binary-value"
+        }
+      },
+      "d3": {
+        "0": {
+          "objectId": 501030,
+          "objectType": "binary-value"
+        },
+        "1": {
+          "objectId": 501031,
+          "objectType": "binary-value"
+        },
+        "2": {
+          "objectId": 501032,
+          "objectType": "binary-value"
+        },
+        "3": {
+          "objectId": 501033,
+          "objectType": "binary-value"
+        },
+        "4": {
+          "objectId": 501034,
+          "objectType": "binary-value"
+        },
+        "5": {
+          "objectId": 501035,
+          "objectType": "binary-value"
+        },
+        "6": {
+          "objectId": 501036,
+          "objectType": "binary-value"
+        },
+        "7": {
+          "objectId": 501037,
+          "objectType": "binary-value"
+        }
+      },
+      "d4": {
+        "0": {
+          "objectId": 501040,
+          "objectType": "binary-value"
+        },
+        "1": {
+          "objectId": 501041,
+          "objectType": "binary-value"
+        },
+        "2": {
+          "objectId": 501042,
+          "objectType": "binary-value"
+        },
+        "3": {
+          "objectId": 501043,
+          "objectType": "binary-value"
+        },
+        "4": {
+          "objectId": 501044,
+          "objectType": "binary-value"
+        },
+        "5": {
+          "objectId": 501045,
+          "objectType": "binary-value"
+        },
+        "6": {
+          "objectId": 501046,
+          "objectType": "binary-value"
+        },
+        "7": {
+          "objectId": 501047,
+          "objectType": "binary-value"
+        }
+      },
+      "d6": {
+        "0": {
+          "objectId": 501060,
+          "objectType": "binary-value"
+        },
+        "1": {
+          "objectId": 501061,
+          "objectType": "binary-value"
+        },
+        "2": {
+          "objectId": 501062,
+          "objectType": "binary-value"
+        },
+        "3": {
+          "objectId": 501063,
+          "objectType": "binary-value"
+        },
+        "4": {
+          "objectId": 501064,
+          "objectType": "binary-value"
+        },
+        "5": {
+          "objectId": 501065,
+          "objectType": "binary-value"
+        },
+        "6": {
+          "objectId": 501066,
+          "objectType": "binary-value"
+        },
+        "7": {
+          "objectId": 501067,
+          "objectType": "binary-value"
+        }
+      }
     }
   ]
 }

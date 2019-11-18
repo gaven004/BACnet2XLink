@@ -11,6 +11,10 @@ public class Request {
     private byte data; // 指令数据
     private byte summary; // 帧校验和
 
+    public static Request buildCheckRequest(int targetAddress) {
+        return buildCheckRequest(BitUtil.toByte(targetAddress));
+    }
+
     public static Request buildCheckRequest(byte targetAddress) {
         Request r = new Request();
         r.targetAddress = targetAddress;
@@ -20,16 +24,20 @@ public class Request {
         return r;
     }
 
-    public void setTargetAddress(byte targetAddress) {
-        this.targetAddress = targetAddress;
-    }
-
     public void setCommand(byte command) {
         this.command = command;
     }
 
     public void setData(byte data) {
         this.data = data;
+    }
+
+    public byte getTargetAddress() {
+        return targetAddress;
+    }
+
+    public void setTargetAddress(byte targetAddress) {
+        this.targetAddress = targetAddress;
     }
 
     /**

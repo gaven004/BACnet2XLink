@@ -72,12 +72,12 @@ public class JSerialCommDemo {
         @Override
         public void serialEvent(SerialPortEvent event) {
             byte[] data = event.getReceivedData();
-            try {
-                Response response = Response.fromByteArray(data);
-                System.out.println(response);
-            } catch (ValidationError validationError) {
-                System.err.println(validationError);
-            }
+//            try {
+//                Response response = Response.fromByteArray(data);
+//                System.out.println(response);
+//            } catch (ValidationError validationError) {
+//                System.err.println(validationError);
+//            }
         }
     }
 }
