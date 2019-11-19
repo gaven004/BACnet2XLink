@@ -1,5 +1,7 @@
 package com.g.bacnet2xlink.model.elevator;
 
+import lombok.Getter;
+
 import com.g.bacnet2xlink.BitUtil;
 import com.g.bacnet2xlink.exception.ValidationError;
 
@@ -88,13 +90,21 @@ public class Response {
     private static final byte FLAG_7 = (byte) (1 << 7);
 
     private byte startOfText; // 帧起始标志
+    @Getter
     private byte sourceAddress; // 帧源地址
+    @Getter
     private byte targetAddress; // 帧目标地址
+    @Getter
     private byte data1; // 数据
+    @Getter
     private byte data2; // 数据
+    @Getter
     private byte data3; // 数据
+    @Getter
     private byte data4; // 数据
+    @Getter
     private byte data5; // 数据
+    @Getter
     private byte data6; // 数据
     private byte summary; // 帧校验和
     private byte endOfText; // 帧结束标志
