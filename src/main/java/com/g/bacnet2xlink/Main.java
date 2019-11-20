@@ -144,6 +144,7 @@ public class Main {
                 .certId(cfg.getCertId()) // 配置授权证书ID
                 .certKey(cfg.getCertKey()) // 配置授权证书密钥
                 .endpoint(cfg.getDeviceEndpoint()) // 云端CM服务器地址
+                .isOpenLog(true)
                 .connectorType(cfg.getConnectorType()); // 配置连接器类型
 
         for (Product product : cfg.getProducts()) {
@@ -442,6 +443,10 @@ public class Main {
             // 启动COV订阅线程
             SubscribeCOVTask sct = new SubscribeCOVTask(cfg, context, new UnsignedInteger(subscriberLifetime * 2));
             final ScheduledFuture<?> scf = executor.scheduleAtFixedRate(sct, 0, subscriberLifetime, TimeUnit.SECONDS);
+
+            ElevatorTransformer et = new ElevatorTransformer(cfg, context);
+            final ScheduledFuture<?> etf = executor.scheduleAtFixedRate(et, cfg.getDataSubmitInterval() / 2,
+                    cfg.getDataSubmitInterval(), TimeUnit.SECONDS);
 
             // 启动上报线程，采集并上报数据
             DataAcquisitionTask dat = new DataAcquisitionTask(cfg, context);

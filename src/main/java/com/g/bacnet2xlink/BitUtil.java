@@ -10,16 +10,15 @@ public final class BitUtil {
     public static final int FLAG_6 = 1 << 6;
     public static final int FLAG_7 = 1 << 7;
 
-    public static final int[] FLAGS = {FLAG_0,FLAG_1,FLAG_2,FLAG_3,FLAG_4,FLAG_5,FLAG_6, FLAG_7};
+    public static final int[] FLAGS = {FLAG_0, FLAG_1, FLAG_2, FLAG_3, FLAG_4, FLAG_5, FLAG_6, FLAG_7};
 
     public static final int MASK = 0xFF;
 
     public static final char DELIMITER = '-';
 
     public static int getBit(byte b, int i) {
-        if ( i < 0 || i > 7) throw new IllegalArgumentException();
-
-        return b & FLAGS[i];
+        if (i < 0 || i > 7) throw new IllegalArgumentException();
+        return (b & FLAGS[i]) > 0 ? 1 : 0;
     }
 
     public static String toHexString(byte b) {

@@ -1,0 +1,824 @@
+{
+  "certId": "5d7a1f2c6fb0bd3fa7566162",
+  "certKey": "77e9fad9-2987-4c93-8170-da775611c437",
+  "deviceEndpoint": "mqtt.xlink.cn:1883",
+  "connectorType": "5764610525098608128",
+  "version": 1,
+  "localDeviceNumber": 1,
+  "broadcastAddress": "192.168.0.255",
+  "networkPrefix": 24,
+  "remoteDevices": [
+    505528
+  ],
+  "dataSubmitInterval": 60,
+  "products": [
+    {
+      "id": "160002baf43a03e9160002baf43aaa01",
+      "name": "水泵",
+      "properties": [
+        {
+          "name": "mode",
+          "desc": "模式",
+          "destType": "Integer",
+          "valueSet": [
+            {
+              "value": "inactive",
+              "xvalue": 2,
+              "desc": "手动模式"
+            },
+            {
+              "value": "active",
+              "xvalue": 1,
+              "desc": "自动模式"
+            }
+          ]
+        },
+        {
+          "name": "status",
+          "desc": "运行状态",
+          "destType": "Integer",
+          "valueSet": [
+            {
+              "value": "inactive",
+              "xvalue": 2,
+              "desc": "停止"
+            },
+            {
+              "value": "active",
+              "xvalue": 1,
+              "desc": "运行"
+            }
+          ]
+        },
+        {
+          "name": "trip",
+          "desc": "过载跳闸",
+          "destType": "Integer",
+          "valueSet": [
+            {
+              "value": "inactive",
+              "xvalue": 2,
+              "desc": "正常"
+            },
+            {
+              "value": "active",
+              "xvalue": 1,
+              "desc": "跳闸"
+            }
+          ]
+        },
+        {
+          "name": "running_time",
+          "desc": "累计运行时间（小时）",
+          "destType": "Float",
+          "valueConverter": ""
+        },
+        {
+          "name": "pressure",
+          "desc": "管道压力（帕）",
+          "destType": "Float",
+          "valueConverter": ""
+        }
+      ],
+      "devices": [
+        {
+          "mac": "500100",
+          "remoteDeviceNumber": 505528,
+          "properties": [
+            {
+              "name": "mode",
+              "desc": "模式",
+              "objectId": 500101,
+              "objectType": "binary-input"
+            },
+            {
+              "name": "status",
+              "desc": "运行状态",
+              "objectId": 500102,
+              "objectType": "binary-input"
+            },
+            {
+              "name": "trip",
+              "desc": "过载跳闸",
+              "objectId": 500103,
+              "objectType": "binary-input"
+            },
+            {
+              "name": "running_time",
+              "desc": "累计运行时间（小时）",
+              "objectId": 500105,
+              "objectType": "analog-value"
+            },
+            {
+              "name": "pressure",
+              "desc": "管道压力（帕）",
+              "objectId": 500106,
+              "objectType": "analog-value"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "160042baf43b03e9160042baf43b7801",
+      "name": "风机",
+      "properties": [
+        {
+          "name": "mode",
+          "desc": "模式",
+          "destType": "Integer",
+          "valueSet": [
+            {
+              "value": "inactive",
+              "xvalue": 2,
+              "desc": "手动模式"
+            },
+            {
+              "value": "active",
+              "xvalue": 1,
+              "desc": "自动模式"
+            }
+          ]
+        },
+        {
+          "name": "status",
+          "desc": "运行状态",
+          "destType": "Integer",
+          "valueSet": [
+            {
+              "value": "inactive",
+              "xvalue": 2,
+              "desc": "停止"
+            },
+            {
+              "value": "active",
+              "xvalue": 1,
+              "desc": "运行"
+            }
+          ]
+        },
+        {
+          "name": "trip",
+          "desc": "过载跳闸",
+          "destType": "Integer",
+          "valueSet": [
+            {
+              "value": "inactive",
+              "xvalue": 2,
+              "desc": "正常"
+            },
+            {
+              "value": "active",
+              "xvalue": 1,
+              "desc": "跳闸"
+            }
+          ]
+        },
+        {
+          "name": "running_time",
+          "desc": "累计运行时间（分钟）",
+          "destType": "Integer",
+          "valueConverter": ""
+        }
+      ],
+      "events": [
+        {
+          "name": "overload",
+          "type": "alert",
+          "desc": "过载跳闸",
+          "messageSet": [
+            {
+              "value": "inactive",
+              "code": "reset",
+              "message": "复位"
+            },
+            {
+              "value": "active",
+              "code": "overload tripping",
+              "message": "过载跳闸"
+            }
+          ]
+        }
+      ],
+      "services": [
+        {
+          "name": "start",
+          "desc": "启动",
+          "destParamType": "BinaryPV",
+          "valueSet": [
+            {
+              "dest": "active"
+            }
+          ],
+          "valueConverter": ""
+        },
+        {
+          "name": "stop",
+          "desc": "停止",
+          "destParamType": "BinaryPV",
+          "valueSet": [
+            {
+              "dest": "inactive"
+            }
+          ],
+          "valueConverter": ""
+        }
+      ],
+      "devices": [
+        {
+          "mac": "500200",
+          "remoteDeviceNumber": 505528,
+          "properties": [
+            {
+              "name": "mode",
+              "desc": "模式",
+              "objectId": 3000229,
+              "objectType": "binary-input"
+            },
+            {
+              "name": "status",
+              "desc": "运行状态",
+              "objectId": 3000227,
+              "objectType": "binary-input"
+            },
+            {
+              "name": "trip",
+              "desc": "过载跳闸",
+              "objectId": 3000228,
+              "objectType": "binary-value"
+            },
+            {
+              "name": "running_time",
+              "desc": "累计运行时间（分钟）",
+              "objectId": 3000238,
+              "objectType": "analog-value"
+            }
+          ],
+          "events": [
+            {
+              "name": "overload",
+              "desc": "过载跳闸",
+              "objectId": 3000228,
+              "objectType": "binary-value",
+              "covProperty": "present-value"
+            }
+          ],
+          "services": [
+            {
+              "name": "start",
+              "desc": "启动",
+              "objectId": 3000234,
+              "objectType": "binary-input"
+            },
+            {
+              "name": "stop",
+              "desc": "停止",
+              "objectId": 3000234,
+              "objectType": "binary-input"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "160002baf43b03e9160002baf43b0001",
+      "name": "集水井",
+      "properties": [
+        {
+          "name": "water_evel",
+          "desc": "水位高度（m）",
+          "destType": "Float",
+          "valueConverter": ""
+        },
+        {
+          "name": "water_capacity",
+          "desc": "水容量百分比",
+          "destType": "Float",
+          "valueConverter": ""
+        }
+      ],
+      "devices": [
+        {
+          "mac": "500400",
+          "remoteDeviceNumber": 505528,
+          "properties": [
+            {
+              "name": "water_evel",
+              "desc": "水位高度（m）",
+              "objectId": 500401,
+              "objectType": "analog-value"
+            },
+            {
+              "name": "water_capacity",
+              "desc": "水容量百分比",
+              "objectId": 500402,
+              "objectType": "analog-value"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "160002baf43b03e9160002baf43b4001",
+      "name": "进线柜",
+      "properties": [
+        {
+          "name": "status",
+          "desc": "运行状态",
+          "destType": "Integer",
+          "valueSet": [
+            {
+              "value": "inactive",
+              "xvalue": 2,
+              "desc": "分闸"
+            },
+            {
+              "value": "active",
+              "xvalue": 1,
+              "desc": "合闸"
+            }
+          ]
+        },
+        {
+          "name": "power_factor",
+          "desc": "功率因数(%)",
+          "destType": "Float",
+          "valueConverter": ""
+        },
+        {
+          "name": "power",
+          "desc": "功率(KW)",
+          "destType": "Float",
+          "valueConverter": ""
+        },
+        {
+          "name": "inspecting_power",
+          "desc": "视在功率(VA)",
+          "destType": "Float",
+          "valueConverter": ""
+        },
+        {
+          "name": "total_active_power",
+          "desc": "总有功功率(kW)",
+          "destType": "Float",
+          "valueConverter": ""
+        },
+        {
+          "name": "active_energy",
+          "desc": "有功电度(kWh)",
+          "destType": "Float",
+          "valueConverter": ""
+        },
+        {
+          "name": "current_a",
+          "desc": "A相电流(A)",
+          "destType": "Float",
+          "valueConverter": ""
+        },
+        {
+          "name": "current_b",
+          "desc": "B相电流(A)",
+          "destType": "Float",
+          "valueConverter": ""
+        },
+        {
+          "name": "current_c",
+          "desc": "C相电流(A)",
+          "destType": "Float",
+          "valueConverter": ""
+        },
+        {
+          "name": "voltage_a",
+          "desc": "A相电压(V)",
+          "destType": "Float",
+          "valueConverter": ""
+        },
+        {
+          "name": "voltage_b",
+          "desc": "B相电压(V)",
+          "destType": "Float",
+          "valueConverter": ""
+        },
+        {
+          "name": "voltage_c",
+          "desc": "C相电压(V)",
+          "destType": "Float",
+          "valueConverter": ""
+        },
+        {
+          "name": "line_voltage_ac",
+          "desc": "AC线电压(V)",
+          "destType": "Float",
+          "valueConverter": ""
+        },
+        {
+          "name": "line_voltage_ab",
+          "desc": "AB线电压(V)",
+          "destType": "Float",
+          "valueConverter": ""
+        },
+        {
+          "name": "line_voltage_bc",
+          "desc": "BC线电压(V)",
+          "destType": "Float",
+          "valueConverter": ""
+        }
+      ],
+      "devices": [
+        {
+          "mac": "500500",
+          "remoteDeviceNumber": 505528,
+          "properties": [
+            {
+              "name": "status",
+              "desc": "运行状态",
+              "objectId": 500501,
+              "objectType": "binary-input"
+            },
+            {
+              "name": "power_factor",
+              "desc": "功率因数(%)",
+              "objectId": 500502,
+              "objectType": "analog-value"
+            },
+            {
+              "name": "power",
+              "desc": "功率(KW)",
+              "objectId": 500503,
+              "objectType": "analog-value"
+            },
+            {
+              "name": "inspecting_power",
+              "desc": "视在功率(VA)",
+              "objectId": 500504,
+              "objectType": "analog-value"
+            },
+            {
+              "name": "total_active_power",
+              "desc": "总有功功率(kW)",
+              "objectId": 500505,
+              "objectType": "analog-value"
+            },
+            {
+              "name": "active_energy",
+              "desc": "有功电度(kWh)",
+              "objectId": 500506,
+              "objectType": "analog-value"
+            },
+            {
+              "name": "current_a",
+              "desc": "A相电流(A)",
+              "objectId": 500507,
+              "objectType": "analog-value"
+            },
+            {
+              "name": "current_b",
+              "desc": "B相电流(A)",
+              "objectId": 500508,
+              "objectType": "analog-value"
+            },
+            {
+              "name": "current_c",
+              "desc": "C相电流(A)",
+              "objectId": 500509,
+              "objectType": "analog-value"
+            },
+            {
+              "name": "voltage_a",
+              "desc": "A相电压(V)",
+              "objectId": 500510,
+              "objectType": "analog-value"
+            },
+            {
+              "name": "voltage_b",
+              "desc": "B相电压(V)",
+              "objectId": 500511,
+              "objectType": "analog-value"
+            },
+            {
+              "name": "voltage_c",
+              "desc": "C相电压(V)",
+              "objectId": 500512,
+              "objectType": "analog-value"
+            },
+            {
+              "name": "line_voltage_ac",
+              "desc": "AC线电压(V)",
+              "objectId": 500513,
+              "objectType": "analog-value"
+            },
+            {
+              "name": "line_voltage_ab",
+              "desc": "AB线电压(V)",
+              "objectId": 500514,
+              "objectType": "analog-value"
+            },
+            {
+              "name": "line_voltage_bc",
+              "desc": "BC线电压(V)",
+              "objectId": 500515,
+              "objectType": "analog-value"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "160042baf43903e9160042baf439f401",
+      "name": "电梯",
+      "properties": [
+        {
+          "name": "up_down_status",
+          "desc": "上下行状态",
+          "destType": "Integer",
+          "valueConverter": "com.g.bacnet2xlink.converter.ElevatorUpDownStatusConverter"
+        },
+        {
+          "name": "device_status",
+          "desc": "运行状态",
+          "destType": "Integer",
+          "valueConverter": "com.g.bacnet2xlink.converter.ElevatorDeviceStatusConverter"
+        },
+        {
+          "name": "door_status",
+          "desc": "运行状态",
+          "destType": "Integer",
+          "valueConverter": "com.g.bacnet2xlink.converter.ElevatorDoorStatusConverter"
+        },
+        {
+          "name": "device_type",
+          "desc": "电梯类型",
+          "destType": "Integer",
+          "valueConverter": ""
+        },
+        {
+          "name": "current_floor",
+          "desc": "所处楼层",
+          "destType": "Integer",
+          "valueConverter": ""
+        }
+      ],
+      "events": [
+        {
+          "name": "fault",
+          "type": "malfunction",
+          "desc": "电梯故障",
+          "messageSet": [
+            {
+              "value": "active",
+              "code": "reset",
+              "message": "复位"
+            },
+            {
+              "value": "inactive",
+              "code": "fault",
+              "message": "电梯故障"
+            }
+          ]
+        }
+      ],
+      "devices": [
+        {
+          "mac": "500300",
+          "remoteDeviceNumber": 505528,
+          "properties": [
+            {
+              "name": "device_type",
+              "desc": "电梯类型",
+              "objectId": 0,
+              "objectType": "constant",
+              "value": "1"
+            },
+            {
+              "name": "current_floor",
+              "desc": "所处楼层",
+              "objectId": 500304,
+              "objectType": "analog-value"
+            },
+            {
+              "objectId": 500320,
+              "objectType": "binary-value"
+            },
+            {
+              "objectId": 500321,
+              "objectType": "binary-value"
+            },
+            {
+              "objectId": 500322,
+              "objectType": "binary-value"
+            },
+            {
+              "objectId": 500323,
+              "objectType": "binary-value"
+            },
+            {
+              "objectId": 500324,
+              "objectType": "binary-value"
+            },
+            {
+              "objectId": 500325,
+              "objectType": "binary-value"
+            },
+            {
+              "objectId": 500326,
+              "objectType": "binary-value"
+            },
+            {
+              "objectId": 500327,
+              "objectType": "binary-value"
+            },
+            {
+              "objectId": 500330,
+              "objectType": "binary-value"
+            },
+            {
+              "objectId": 500331,
+              "objectType": "binary-value"
+            },
+            {
+              "objectId": 500332,
+              "objectType": "binary-value"
+            },
+            {
+              "objectId": 500333,
+              "objectType": "binary-value"
+            },
+            {
+              "objectId": 500334,
+              "objectType": "binary-value"
+            },
+            {
+              "objectId": 500335,
+              "objectType": "binary-value"
+            },
+            {
+              "objectId": 500336,
+              "objectType": "binary-value"
+            },
+            {
+              "objectId": 500337,
+              "objectType": "binary-value"
+            }
+          ],
+          "events": [
+            {
+              "name": "fault",
+              "desc": "电梯故障",
+              "objectId": 500324,
+              "objectType": "binary-value",
+              "covProperty": "present-value"
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "elevators": [
+    {
+      "host": "localhost",
+      "port": 12345,
+      "targetAddress": 1,
+      "bacnetDeviceNumber": 505528,
+      "d1": {
+        "objectId": 501001,
+        "objectType": "analog-value"
+      },
+      "d2": {
+        "0": {
+          "objectId": 501020,
+          "objectType": "binary-value"
+        },
+        "1": {
+          "objectId": 501021,
+          "objectType": "binary-value"
+        },
+        "2": {
+          "objectId": 501022,
+          "objectType": "binary-value"
+        },
+        "3": {
+          "objectId": 501023,
+          "objectType": "binary-value"
+        },
+        "4": {
+          "objectId": 501024,
+          "objectType": "binary-value"
+        },
+        "5": {
+          "objectId": 501025,
+          "objectType": "binary-value"
+        },
+        "6": {
+          "objectId": 501026,
+          "objectType": "binary-value"
+        },
+        "7": {
+          "objectId": 501027,
+          "objectType": "binary-value"
+        }
+      },
+      "d3": {
+        "0": {
+          "objectId": 501030,
+          "objectType": "binary-value"
+        },
+        "1": {
+          "objectId": 501031,
+          "objectType": "binary-value"
+        },
+        "2": {
+          "objectId": 501032,
+          "objectType": "binary-value"
+        },
+        "3": {
+          "objectId": 501033,
+          "objectType": "binary-value"
+        },
+        "4": {
+          "objectId": 501034,
+          "objectType": "binary-value"
+        },
+        "5": {
+          "objectId": 501035,
+          "objectType": "binary-value"
+        },
+        "6": {
+          "objectId": 501036,
+          "objectType": "binary-value"
+        },
+        "7": {
+          "objectId": 501037,
+          "objectType": "binary-value"
+        }
+      },
+      "d4": {
+        "0": {
+          "objectId": 501040,
+          "objectType": "binary-value"
+        },
+        "1": {
+          "objectId": 501041,
+          "objectType": "binary-value"
+        },
+        "2": {
+          "objectId": 501042,
+          "objectType": "binary-value"
+        },
+        "3": {
+          "objectId": 501043,
+          "objectType": "binary-value"
+        },
+        "4": {
+          "objectId": 501044,
+          "objectType": "binary-value"
+        },
+        "5": {
+          "objectId": 501045,
+          "objectType": "binary-value"
+        },
+        "6": {
+          "objectId": 501046,
+          "objectType": "binary-value"
+        },
+        "7": {
+          "objectId": 501047,
+          "objectType": "binary-value"
+        }
+      },
+      "d6": {
+        "0": {
+          "objectId": 501060,
+          "objectType": "binary-value"
+        },
+        "1": {
+          "objectId": 501061,
+          "objectType": "binary-value"
+        },
+        "2": {
+          "objectId": 501062,
+          "objectType": "binary-value"
+        },
+        "3": {
+          "objectId": 501063,
+          "objectType": "binary-value"
+        },
+        "4": {
+          "objectId": 501064,
+          "objectType": "binary-value"
+        },
+        "5": {
+          "objectId": 501065,
+          "objectType": "binary-value"
+        },
+        "6": {
+          "objectId": 501066,
+          "objectType": "binary-value"
+        },
+        "7": {
+          "objectId": 501067,
+          "objectType": "binary-value"
+        }
+      }
+    }
+  ]
+}

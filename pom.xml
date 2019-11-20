@@ -17,7 +17,7 @@
         <dependency>
             <groupId>cn.xlink</groupId>
             <artifactId>xlink-iot-sdk</artifactId>
-            <version>3.5.0-pg</version>
+            <version>3.5.4-pg</version>
         </dependency>
         <dependency>
             <groupId>cn.xlink</groupId>
@@ -143,7 +143,7 @@
                             <filtering>false</filtering>
                         </resource>
                         <resource>
-                            <!--<directory>.</directory>-->
+                            <directory>.</directory>
                             <includes>
                                 <include>README.md</include>
                                 <include>*.txt</include>

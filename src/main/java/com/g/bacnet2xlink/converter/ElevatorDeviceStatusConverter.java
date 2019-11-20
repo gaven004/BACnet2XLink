@@ -13,31 +13,10 @@ public class ElevatorDeviceStatusConverter implements MultiValueConverter {
      */
     @Override
     public Object convert(PropertyValues src) throws PropertyValueException {
-        Encodable value = src.get(new ObjectIdentifier(ObjectType.binaryValue, 500322), PropertyIdentifier.presentValue);
-        if (!(value instanceof BinaryPV)) {
-            throw new PropertyValueException(new ErrorClassAndCode(ErrorClass.property, ErrorCode.invalidDataType));
-        }
-        if (BinaryPV.active.equals(value)) {
-            return 1;
-        }
+        Encodable value;
 
-        value = src.get(new ObjectIdentifier(ObjectType.binaryValue, 500320), PropertyIdentifier.presentValue);
-        if (!(value instanceof BinaryPV)) {
-            throw new PropertyValueException(new ErrorClassAndCode(ErrorClass.property, ErrorCode.invalidDataType));
-        }
-        if (BinaryPV.active.equals(value)) {
-            return 1;
-        }
-
-        value = src.get(new ObjectIdentifier(ObjectType.binaryValue, 500321), PropertyIdentifier.presentValue);
-        if (!(value instanceof BinaryPV)) {
-            throw new PropertyValueException(new ErrorClassAndCode(ErrorClass.property, ErrorCode.invalidDataType));
-        }
-        if (BinaryPV.active.equals(value)) {
-            return 1;
-        }
-
-        value = src.get(new ObjectIdentifier(ObjectType.binaryValue, 500326), PropertyIdentifier.presentValue);
+        // D2-6，为1表示电梯消防专用
+        value = src.get(new ObjectIdentifier(ObjectType.binaryValue, 3000046), PropertyIdentifier.presentValue);
         if (!(value instanceof BinaryPV)) {
             throw new PropertyValueException(new ErrorClassAndCode(ErrorClass.property, ErrorCode.invalidDataType));
         }
@@ -45,7 +24,8 @@ public class ElevatorDeviceStatusConverter implements MultiValueConverter {
             return 3;
         }
 
-        value = src.get(new ObjectIdentifier(ObjectType.binaryValue, 500327), PropertyIdentifier.presentValue);
+        // D2-7，为1表示电梯消防返回
+        value = src.get(new ObjectIdentifier(ObjectType.binaryValue, 3000047), PropertyIdentifier.presentValue);
         if (!(value instanceof BinaryPV)) {
             throw new PropertyValueException(new ErrorClassAndCode(ErrorClass.property, ErrorCode.invalidDataType));
         }
@@ -53,6 +33,33 @@ public class ElevatorDeviceStatusConverter implements MultiValueConverter {
             return 3;
         }
 
-        return 2;
+        // D2-3，为1表示检修中
+        value = src.get(new ObjectIdentifier(ObjectType.binaryValue, 3000043), PropertyIdentifier.presentValue);
+        if (!(value instanceof BinaryPV)) {
+            throw new PropertyValueException(new ErrorClassAndCode(ErrorClass.property, ErrorCode.invalidDataType));
+        }
+        if (BinaryPV.active.equals(value)) {
+            return 2;
+        }
+
+        // D2-4，为0表示电梯故障
+        value = src.get(new ObjectIdentifier(ObjectType.binaryValue, 3000044), PropertyIdentifier.presentValue);
+        if (!(value instanceof BinaryPV)) {
+            throw new PropertyValueException(new ErrorClassAndCode(ErrorClass.property, ErrorCode.invalidDataType));
+        }
+        if (BinaryPV.inactive.equals(value)) {
+            return 2;
+        }
+
+        // D2-5，为1表示电梯泊梯
+        value = src.get(new ObjectIdentifier(ObjectType.binaryValue, 3000045), PropertyIdentifier.presentValue);
+        if (!(value instanceof BinaryPV)) {
+            throw new PropertyValueException(new ErrorClassAndCode(ErrorClass.property, ErrorCode.invalidDataType));
+        }
+        if (BinaryPV.active.equals(value)) {
+            return 2;
+        }
+
+        return 1;
     }
 }

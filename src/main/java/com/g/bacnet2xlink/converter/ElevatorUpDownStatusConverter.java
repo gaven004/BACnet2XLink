@@ -13,7 +13,7 @@ public class ElevatorUpDownStatusConverter implements MultiValueConverter {
      */
     @Override
     public Object convert(PropertyValues src) throws PropertyValueException {
-        Encodable value = src.get(new ObjectIdentifier(ObjectType.binaryValue, 500320), PropertyIdentifier.presentValue);
+        Encodable value = src.get(new ObjectIdentifier(ObjectType.binaryValue, 3000040), PropertyIdentifier.presentValue);
         if (!(value instanceof BinaryPV)) {
             throw new PropertyValueException(new ErrorClassAndCode(ErrorClass.property, ErrorCode.invalidDataType));
         }
@@ -21,7 +21,7 @@ public class ElevatorUpDownStatusConverter implements MultiValueConverter {
             return 1;
         }
 
-        value = src.get(new ObjectIdentifier(ObjectType.binaryValue, 500321), PropertyIdentifier.presentValue);
+        value = src.get(new ObjectIdentifier(ObjectType.binaryValue, 3000041), PropertyIdentifier.presentValue);
         if (!(value instanceof BinaryPV)) {
             throw new PropertyValueException(new ErrorClassAndCode(ErrorClass.property, ErrorCode.invalidDataType));
         }

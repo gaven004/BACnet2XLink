@@ -13,7 +13,8 @@ public class ElevatorDoorStatusConverter implements MultiValueConverter {
      */
     @Override
     public Object convert(PropertyValues src) throws PropertyValueException {
-        Encodable value = src.get(new ObjectIdentifier(ObjectType.binaryValue, 500336), PropertyIdentifier.presentValue);
+        // D3-6
+        Encodable value = src.get(new ObjectIdentifier(ObjectType.binaryValue, 3000054), PropertyIdentifier.presentValue);
         if (!(value instanceof BinaryPV)) {
             throw new PropertyValueException(new ErrorClassAndCode(ErrorClass.property, ErrorCode.invalidDataType));
         }
@@ -21,7 +22,8 @@ public class ElevatorDoorStatusConverter implements MultiValueConverter {
             return 3;
         }
 
-        value = src.get(new ObjectIdentifier(ObjectType.binaryValue, 500337), PropertyIdentifier.presentValue);
+        // D3-7
+        value = src.get(new ObjectIdentifier(ObjectType.binaryValue, 3000055), PropertyIdentifier.presentValue);
         if (!(value instanceof BinaryPV)) {
             throw new PropertyValueException(new ErrorClassAndCode(ErrorClass.property, ErrorCode.invalidDataType));
         }
@@ -29,7 +31,8 @@ public class ElevatorDoorStatusConverter implements MultiValueConverter {
             return 4;
         }
 
-        value = src.get(new ObjectIdentifier(ObjectType.binaryValue, 500333), PropertyIdentifier.presentValue);
+        // D3-3
+        value = src.get(new ObjectIdentifier(ObjectType.binaryValue, 3000051), PropertyIdentifier.presentValue);
         if (!(value instanceof BinaryPV)) {
             throw new PropertyValueException(new ErrorClassAndCode(ErrorClass.property, ErrorCode.invalidDataType));
         }
