@@ -47,10 +47,10 @@ public class DataAcquisitionHelper {
         List<Property> cproperties = device.getCproperties();
         if (cproperties != null && !cproperties.isEmpty()) {
             for (Property property : cproperties) {
-                Optional<MultiValueConverter> opt = Optional.of((MultiValueConverter) context.getConverter(property.getValueConverter()));
-                opt.ifPresent(converter -> {
+                Optional<MultiValueConverter> optConverter = Optional.of((MultiValueConverter) context.getConverter(property.getValueConverter()));
+                optConverter.ifPresent(converter -> {
                     try {
-                        attributes.put(property.getName(), converter.convert(pvs));
+                        attributes.put(property.getName(), converter.convert(pvs, device.getConverterProperty(property.getValueConverter())));
                     } catch (PropertyValueException e) {
                         log.warn("属性转换失败，property: {}，exception: {}", property.getName(), e.getMessage());
                     }

@@ -33,6 +33,8 @@ public class Device {
     private List<Event> events;
     private List<Service> services;
 
+    private Map<String, Map<String, Object>> converterProperties;
+
     private Map<String, Object> immutableProperties;
 
     private Map<ObjectIdentifier, Property> propertyMap;
@@ -41,6 +43,10 @@ public class Device {
     private Map<String, Service> xServiceMap;
 
     private Map<ObjectIdentifier, Event> eventMap;
+
+    public Map<String, Object> getConverterProperty(String key) {
+        return converterProperties.get(key);
+    }
 
     /**
      * 根据云平台的属性，查对应物理设备的对象

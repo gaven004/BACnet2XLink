@@ -528,7 +528,25 @@
               "objectId": 3000081,
               "objectType": "binary-value"
             }
-          ]
+          ],
+          "converterProperties": {
+            "com.g.bacnet2xlink.converter.ElevatorUpDownStatusConverter": {
+              "D2-0": 3000040,
+              "D2-1": 3000041
+            },
+            "com.g.bacnet2xlink.converter.ElevatorDeviceStatusConverter": {
+              "D2-6": 3000046,
+              "D2-7": 3000047,
+              "D2-3": 3000043,
+              "D2-4": 3000044,
+              "D2-5": 3000045
+            },
+            "com.g.bacnet2xlink.converter.ElevatorDoorStatusConverter": {
+              "D3-6": 3000054,
+              "D3-7": 3000055,
+              "D3-3": 3000051
+            }
+          }
         }
       ]
     }

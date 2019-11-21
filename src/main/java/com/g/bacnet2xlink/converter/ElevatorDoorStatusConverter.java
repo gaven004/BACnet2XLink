@@ -1,5 +1,7 @@
 package com.g.bacnet2xlink.converter;
 
+import java.util.Map;
+
 import com.serotonin.bacnet4j.exception.PropertyValueException;
 import com.serotonin.bacnet4j.type.Encodable;
 import com.serotonin.bacnet4j.type.enumerated.*;
@@ -12,9 +14,9 @@ public class ElevatorDoorStatusConverter implements MultiValueConverter {
      * @return 1：开门；2关门；3：开门中；4：关门中
      */
     @Override
-    public Object convert(PropertyValues src) throws PropertyValueException {
-        // D3-6
-        Encodable value = src.get(new ObjectIdentifier(ObjectType.binaryValue, 3000054), PropertyIdentifier.presentValue);
+    public Object convert(PropertyValues src, Map<String, Object> props) throws PropertyValueException {
+        // D3-6，为1 表示开门中
+        Encodable value = src.get(new ObjectIdentifier(ObjectType.binaryValue, (Integer) props.get("D3-6")), PropertyIdentifier.presentValue);
         if (!(value instanceof BinaryPV)) {
             throw new PropertyValueException(new ErrorClassAndCode(ErrorClass.property, ErrorCode.invalidDataType));
         }
@@ -22,8 +24,8 @@ public class ElevatorDoorStatusConverter implements MultiValueConverter {
             return 3;
         }
 
-        // D3-7
-        value = src.get(new ObjectIdentifier(ObjectType.binaryValue, 3000055), PropertyIdentifier.presentValue);
+        // D3-7，为1 表示关门中
+        value = src.get(new ObjectIdentifier(ObjectType.binaryValue, (Integer) props.get("D3-7")), PropertyIdentifier.presentValue);
         if (!(value instanceof BinaryPV)) {
             throw new PropertyValueException(new ErrorClassAndCode(ErrorClass.property, ErrorCode.invalidDataType));
         }
@@ -31,8 +33,8 @@ public class ElevatorDoorStatusConverter implements MultiValueConverter {
             return 4;
         }
 
-        // D3-3
-        value = src.get(new ObjectIdentifier(ObjectType.binaryValue, 3000051), PropertyIdentifier.presentValue);
+        // D3-3，为1 表示轿门关闭
+        value = src.get(new ObjectIdentifier(ObjectType.binaryValue, (Integer) props.get("D3-3")), PropertyIdentifier.presentValue);
         if (!(value instanceof BinaryPV)) {
             throw new PropertyValueException(new ErrorClassAndCode(ErrorClass.property, ErrorCode.invalidDataType));
         }
