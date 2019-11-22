@@ -16,7 +16,7 @@
             <DefaultRolloverStrategy max="100"/>
         </RollingFile>
         <RollingRandomAccessFile name="XlinkLog"
-                fileName="logs/xlink.log" filePattern="logs/xlink.log.%d{yyyy-MM-dd}">
+                fileName="logs/xlink.log" filePattern="logs/$${date:yyyy-MM}/xlink.log.%d{yyyy-MM-dd}.gz">
             <PatternLayout pattern="%d{yyyy-MM-dd HH:mm:ss.SSS} %p %m%n" />
             <Policies>
                 <TimeBasedTriggeringPolicy interval="1" modulate="true" />

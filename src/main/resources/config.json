@@ -66,6 +66,12 @@
               "desc": "故障"
             }
           ]
+        },
+        {
+          "name": "running_time",
+          "desc": "累计运行时间（小时）",
+          "destType": "Float",
+          "valueConverter": ""
         }
       ],
       "devices": [
@@ -90,6 +96,12 @@
               "desc": "过载跳闸",
               "objectId": 3000028,
               "objectType": "binary-input"
+            },
+            {
+              "name": "running_time",
+              "desc": "累计运行时间（小时）",
+              "objectId": 3000088,
+              "objectType": "analog-value"
             }
           ]
         },
@@ -114,6 +126,12 @@
               "desc": "过载跳闸",
               "objectId": 3000027,
               "objectType": "binary-input"
+            },
+            {
+              "name": "running_time",
+              "desc": "累计运行时间（小时）",
+              "objectId": 3000087,
+              "objectType": "analog-value"
             }
           ]
         }
@@ -173,6 +191,12 @@
               "desc": "跳闸"
             }
           ]
+        },
+        {
+          "name": "running_time",
+          "desc": "累计运行时间（小时）",
+          "destType": "Integer",
+          "valueConverter": ""
         }
       ],
       "services": [
@@ -221,6 +245,12 @@
               "desc": "过载跳闸",
               "objectId": 3000021,
               "objectType": "binary-input"
+            },
+            {
+              "name": "running_time",
+              "desc": "累计运行时间（小时）",
+              "objectId": 3000083,
+              "objectType": "analog-value"
             }
           ],
           "services": [
@@ -259,6 +289,12 @@
               "desc": "过载跳闸",
               "objectId": 3000018,
               "objectType": "binary-input"
+            },
+            {
+              "name": "running_time",
+              "desc": "累计运行时间（小时）",
+              "objectId": 3000083,
+              "objectType": "analog-value"
             }
           ],
           "services": [

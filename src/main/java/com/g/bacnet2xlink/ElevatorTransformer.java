@@ -5,6 +5,8 @@ import java.io.IOException;
 import java.io.OutputStream;
 import java.net.InetSocketAddress;
 import java.net.Socket;
+import java.util.Collections;
+import java.util.HashMap;
 import java.util.Map;
 
 import com.serotonin.bacnet4j.LocalDevice;
@@ -35,6 +37,16 @@ public class ElevatorTransformer implements Runnable {
     private static final int RESPONSE_DATA_LENGTH = 11;
 
     private static final int SOCKET_TIMEOUT = 5000;
+    private static final Map<Integer, Integer> CAR_POSITION_MAP =
+            Collections.unmodifiableMap(
+                    new HashMap<Integer, Integer>() {
+                        {
+                            put(4, 1);
+                            put(6, 4);
+                            put(11, 14);
+                        }
+                    }
+            );
 
     private Configuration cfg;
     private Context context;
@@ -109,7 +121,7 @@ public class ElevatorTransformer implements Runnable {
                     LocalDevice localDevice = context.getLocalDevice();
                     RemoteDevice remoteDevice = context.getRemoteDevice(ele.getBacnetDeviceNumber());
 
-                    writeAV(localDevice, remoteDevice, ele.getD1(), response.getCarPosition());
+                    writeAV(localDevice, remoteDevice, ele.getD1(), getCarPosition(response.getCarPosition()));
                     writeBVs(localDevice, remoteDevice, ele.getD2(), response.getData2());
                     writeBVs(localDevice, remoteDevice, ele.getD3(), response.getData3());
                     writeBVs(localDevice, remoteDevice, ele.getD4(), response.getData4());
@@ -148,5 +160,13 @@ public class ElevatorTransformer implements Runnable {
         }
 
         log.info("电梯数据采集转换任务结束");
+    }
+
+    private int getCarPosition(int carPosition) {
+        if (CAR_POSITION_MAP.containsKey(carPosition)) {
+            return CAR_POSITION_MAP.get(carPosition);
+        }
+
+        return carPosition;
     }
 }
