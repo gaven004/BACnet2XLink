@@ -150,6 +150,19 @@ public class Configuration {
                     }
                 }
 
+            if (product.getSelfEvents() != null)
+                for (Event event : product.getSelfEvents()) {
+                    if (event.getMessageSet() != null) {
+                        Map<String, EventMessage> messageMap = new HashMap<>();
+
+                        for (EventMessage msg : event.getMessageSet()) {
+                            messageMap.put(msg.getValue(), msg);
+                        }
+
+                        event.setMessageMap(messageMap);
+                    }
+                }
+
             if (product.getServices() != null)
                 for (Service service : product.getServices()) {
                     if (service.getValueSet() != null) {
@@ -197,6 +210,20 @@ public class Configuration {
                     for (Event dest : device.getEvents()) {
                         dest.setCovPid(PropertyIdentifier.forName(dest.getCovProperty()));
                         for (Event src : product.getEvents()) {
+                            if (dest.getName().equals(src.getName())) {
+                                dest.setType(src.getType());
+                                if (src.getMessageSet() != null) {
+                                    dest.setMessageSet(src.getMessageSet());
+                                    dest.setMessageMap(src.getMessageMap());
+                                }
+                                break;
+                            }
+                        }
+                    }
+
+                if (device.getSelfEvents() != null)
+                    for (Event dest : device.getSelfEvents()) {
+                        for (Event src : product.getSelfEvents()) {
                             if (dest.getName().equals(src.getName())) {
                                 dest.setType(src.getType());
                                 if (src.getMessageSet() != null) {
@@ -275,6 +302,14 @@ public class Configuration {
                         eventMap.put(new ObjectIdentifier(ObjectType.forName(event.getObjectType()), event.getObjectId()), event);
                     }
                     device.setEventMap(eventMap);
+                }
+
+                if (device.getSelfEvents() != null) {
+                    Map<ObjectIdentifier, Event> eventMap = new HashMap<>();
+                    for (Event event : device.getSelfEvents()) {
+                        eventMap.put(new ObjectIdentifier(ObjectType.forName(event.getObjectType()), event.getObjectId()), event);
+                    }
+                    device.setSelfEventMap(eventMap);
                 }
             }
         }

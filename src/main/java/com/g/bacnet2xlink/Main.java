@@ -33,7 +33,9 @@ import org.slf4j.LoggerFactory;
 import xlink.cm.message.DeviceLoginResultMessage;
 import xlink.cm.message.type.DeviceLoginRetCodeType;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
@@ -257,6 +259,7 @@ public class Main {
 
                 //构建应答的信息属性
                 Map<String, Object> attributes = new HashMap<>();
+                List<EventMessage> events = new ArrayList<>();
                 //构建应答码
                 String code = null;
 
@@ -266,7 +269,7 @@ public class Main {
 
                     LocalDevice localDevice = context.getLocalDevice();
                     RemoteDevice remoteDevice = context.getRemoteDevice(device.getRemoteDeviceNumber());
-                    DataAcquisitionHelper.readPresentValues(context, localDevice, remoteDevice, device, attributes, log);
+                    DataAcquisitionHelper.readPresentValues(context, localDevice, remoteDevice, device, attributes, events, log);
                     code = "200";
                 } catch (UnknownDevice unknown) {
                     log.warn(unknown.getMessage());

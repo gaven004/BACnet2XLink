@@ -386,6 +386,32 @@
           "valueConverter": ""
         }
       ],
+      "selfEvents": [
+        {
+          "name": "a2_fault",
+          "type": "malfunction",
+          "desc": "电梯A2级故障",
+          "messageSet": [
+            {
+              "value": "active",
+              "code": "a2_fault",
+              "message": "A2级故障"
+            }
+          ]
+        },
+        {
+          "name": "a1_fault",
+          "type": "malfunction",
+          "desc": "电梯A1级故障",
+          "messageSet": [
+            {
+              "value": "active",
+              "code": "a1_fault",
+              "message": "A1级故障"
+            }
+          ]
+        }
+      ],
       "devices": [
         {
           "mac": "E1",
@@ -582,7 +608,23 @@
               "D3-7": 3000055,
               "D3-3": 3000051
             }
-          }
+          },
+          "selfEvents": [
+            {
+              "name": "a2_fault",
+              "desc": "电梯A2级故障",
+              "objectId": 3000063,
+              "objectType": "binary-value",
+              "covProperty": "_self"
+            },
+            {
+              "name": "a1_fault",
+              "desc": "电梯A1级故障",
+              "objectId": 3000064,
+              "objectType": "binary-value",
+              "covProperty": "_self"
+            }
+          ]
         }
       ]
     }

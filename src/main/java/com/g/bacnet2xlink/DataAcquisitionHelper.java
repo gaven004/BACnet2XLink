@@ -4,6 +4,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
+import com.g.bacnet2xlink.definition.Event;
+import com.g.bacnet2xlink.definition.EventMessage;
 import com.serotonin.bacnet4j.LocalDevice;
 import com.serotonin.bacnet4j.RemoteDevice;
 import com.serotonin.bacnet4j.exception.PropertyValueException;
@@ -18,10 +20,11 @@ import com.g.bacnet2xlink.definition.Property;
 
 public class DataAcquisitionHelper {
     public static void readPresentValues(Context context, LocalDevice localDevice, RemoteDevice remoteDevice,
-                                         Device device, Map<String, Object> attributes, Logger log) throws Exception {
+                                         Device device, Map<String, Object> attributes, List<EventMessage> events, Logger log) throws Exception {
         PropertyValues pvs = RequestUtils.readOidPresentValues(localDevice, remoteDevice, device.getOids(), null);
         for (ObjectPropertyReference opr : pvs) {
             log.info("\t{} = {}", opr.getObjectIdentifier().toString(), pvs.get(opr));
+
             Property property = device.getProperty(opr.getObjectIdentifier());
             if (property.getName() != null && property.getName().trim().length() > 0) {
                 Object value = null;
@@ -40,6 +43,16 @@ public class DataAcquisitionHelper {
                     }
                 }
                 attributes.put(property.getName(), value);
+            }
+
+            Event event = device.getSelfEvent(opr.getObjectIdentifier());
+            if (event != null) {
+                String value = pvs.get(opr).toString();
+                EventMessage message = event.getMessage(value);
+                if (message != null) {
+                    message.setType(event.getType());
+                    events.add(message);
+                }
             }
         }
 

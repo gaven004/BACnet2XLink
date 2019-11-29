@@ -23,6 +23,7 @@ public class Product {
     private List<Property> properties;
     private List<Property> cproperties;
     private List<Event> events;
+    private List<Event> selfEvents;
     private List<Service> services; // 用于XlinkCmMqttClient初始化进注册服务
 
     private List<Device> devices;

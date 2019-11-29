@@ -31,6 +31,7 @@ public class Device {
     private List<Property> cproperties;
     private List<ObjectIdentifier> oids;
     private List<Event> events;
+    private List<Event> selfEvents;
     private List<Service> services;
 
     private Map<String, Map<String, Object>> converterProperties;
@@ -43,6 +44,8 @@ public class Device {
     private Map<String, Service> xServiceMap;
 
     private Map<ObjectIdentifier, Event> eventMap;
+
+    private Map<ObjectIdentifier, Event> selfEventMap;
 
     public Map<String, Object> getConverterProperty(String key) {
         return converterProperties.get(key);
@@ -108,5 +111,9 @@ public class Device {
         }
 
         throw new UnknownEvent();
+    }
+
+    public Event getSelfEvent(ObjectIdentifier oid) {
+        return selfEventMap.get(oid);
     }
 }

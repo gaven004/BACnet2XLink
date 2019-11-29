@@ -2,6 +2,8 @@ package com.g.bacnet2xlink;
 
 import cn.xlink.iot.sdk.mqtt.client.cm.XlinkCmMqttClient;
 import com.g.bacnet2xlink.definition.Device;
+import com.g.bacnet2xlink.definition.Event;
+import com.g.bacnet2xlink.definition.EventMessage;
 import com.g.bacnet2xlink.definition.Product;
 import com.g.bacnet2xlink.exception.UnknownDevice;
 import com.g.bacnet2xlink.exception.UnknownProperty;
@@ -12,9 +14,7 @@ import com.serotonin.bacnet4j.exception.BACnetException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.util.Date;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.*;
 
 public class DataAcquisitionTask implements Runnable {
     private static final Logger log = LoggerFactory.getLogger(DataAcquisitionTask.class);
@@ -42,6 +42,7 @@ public class DataAcquisitionTask implements Runnable {
 
                 // 构建上报数据
                 Map<String, Object> attributes = new HashMap();
+                List<EventMessage> events = new ArrayList<>();
                 try {
                     /*
                      * 将每一个设备的上报，作为独立的任务
@@ -49,9 +50,19 @@ public class DataAcquisitionTask implements Runnable {
                      * 但遇到断网等整体异常的情况，则会在所有设备上报失败后才会重新初始化
                      */
                     RemoteDevice rd = context.getRemoteDevice(device.getRemoteDeviceNumber());
-                    DataAcquisitionHelper.readPresentValues(context, ld, rd, device, attributes, log);
+                    DataAcquisitionHelper.readPresentValues(context, ld, rd, device, attributes, events, log);
                     log.info("上报设备数据：{}", attributes);
                     xlinkMqttClient.publishAttribute(device.getXDeviceId(), cfg.getVersion(), attributes, new Date());
+                    // 处理自产生事件
+                    if (!events.isEmpty()) {
+                        for(EventMessage event : events) {
+                            Map<String, Object> pushData = new HashMap<>(); // 事件内容
+                            pushData.put("code", event.getCode());
+                            pushData.put("message", event.getMessage());
+                            log.info("发布事件[deviceId: {}, event: {}, data: {}]", device.getXDeviceId(), event.getType(), pushData);
+                            xlinkMqttClient.publishEvent(device.getXDeviceId(), cfg.getVersion(), event.getType(), pushData, new Date());
+                        }
+                    }
                 } catch (UnknownDevice | UnknownProperty | UnknownValue unknown) {
                     log.warn(unknown.getMessage());
                 } catch (BACnetException e) {

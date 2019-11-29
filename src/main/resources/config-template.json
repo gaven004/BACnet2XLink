@@ -560,19 +560,26 @@
       ],
       "events": [
         {
-          "name": "fault",
+          "name": "a2_fault",
           "type": "malfunction",
-          "desc": "电梯故障",
+          "desc": "电梯A2级故障",
           "messageSet": [
             {
               "value": "active",
               "code": "reset",
-              "message": "复位"
-            },
+              "message": "A2级故障"
+            }
+          ]
+        },
+        {
+          "name": "a1_fault",
+          "type": "malfunction",
+          "desc": "电梯A1级故障",
+          "messageSet": [
             {
-              "value": "inactive",
-              "code": "fault",
-              "message": "电梯故障"
+              "value": "active",
+              "code": "reset",
+              "message": "A1级故障"
             }
           ]
         }
