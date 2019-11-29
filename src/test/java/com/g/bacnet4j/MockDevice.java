@@ -25,7 +25,7 @@ public class MockDevice {
         IpNetwork network = builder.build();
 
         try {
-            LocalDevice device = new LocalDevice(505528, new DefaultTransport(network)).initialize();
+            LocalDevice device = new LocalDevice(500682, new DefaultTransport(network)).initialize();
 
             // 风机
             BACnetObject obj = new BACnetObject(device, ObjectType.forName("binary-input"), 3000229, "fan-mode");
@@ -140,71 +140,175 @@ public class MockDevice {
             device.addObject(obj);
 
             // 电梯
-            obj = new BACnetObject(device, ObjectType.forName("analog-value"), 500304, "elevator-current_floor");
+            obj = new BACnetObject(device, ObjectType.forName("analog-value"), 3000038, "elevator-current_floor");
             obj.writePropertyInternal(PropertyIdentifier.presentValue, new Real(random.nextInt(20)));
             device.addObject(obj);
 
-            obj = new BACnetObject(device, ObjectType.forName("binary-value"), 500320, "elevator-down");
+            obj = new BACnetObject(device, ObjectType.forName("binary-value"), 3000040, "elevator-3000040");
             obj.writePropertyInternal(PropertyIdentifier.presentValue, BinaryPV.inactive);
             device.addObject(obj);
 
-            obj = new BACnetObject(device, ObjectType.forName("binary-value"), 500321, "elevator-up");
+            obj = new BACnetObject(device, ObjectType.forName("binary-value"), 3000041, "elevator-3000041");
             obj.writePropertyInternal(PropertyIdentifier.presentValue, BinaryPV.inactive);
             device.addObject(obj);
 
-            obj = new BACnetObject(device, ObjectType.forName("binary-value"), 500322, "elevator-in_service");
+            obj = new BACnetObject(device, ObjectType.forName("binary-value"), 3000042, "elevator-3000042");
             obj.writePropertyInternal(PropertyIdentifier.presentValue, BinaryPV.inactive);
             device.addObject(obj);
 
-            obj = new BACnetObject(device, ObjectType.forName("binary-value"), 500323, "elevator-inspection");
+            obj = new BACnetObject(device, ObjectType.forName("binary-value"), 3000043, "elevator-3000043");
             obj.writePropertyInternal(PropertyIdentifier.presentValue, BinaryPV.inactive);
             device.addObject(obj);
 
-//            obj = new BACnetObject(device, ObjectType.forName("binary-value"), 500324, "elevator-out_of_service");
-//            obj.writePropertyInternal(PropertyIdentifier.presentValue, BinaryPV.inactive);
-            obj = new BinaryValueObject(device, 500324, "elevator-out_of_service", BinaryPV.inactive, false).supportCovReporting();
-
-            obj = new BACnetObject(device, ObjectType.forName("binary-value"), 500325, "elevator-parking");
+            obj = new BACnetObject(device, ObjectType.forName("binary-value"), 3000044, "elevator-3000044");
             obj.writePropertyInternal(PropertyIdentifier.presentValue, BinaryPV.inactive);
             device.addObject(obj);
 
-            obj = new BACnetObject(device, ObjectType.forName("binary-value"), 500326, "elevator-fireman_control");
-            obj.writePropertyInternal(PropertyIdentifier.presentValue, BinaryPV.active);
-            device.addObject(obj);
-
-            obj = new BACnetObject(device, ObjectType.forName("binary-value"), 500327, "elevator-fire_operation");
+            obj = new BACnetObject(device, ObjectType.forName("binary-value"), 3000045, "elevator-3000045");
             obj.writePropertyInternal(PropertyIdentifier.presentValue, BinaryPV.inactive);
             device.addObject(obj);
 
-            obj = new BACnetObject(device, ObjectType.forName("binary-value"), 500330, "elevator-parallel_operation");
+            obj = new BACnetObject(device, ObjectType.forName("binary-value"), 3000046, "elevator-3000046");
             obj.writePropertyInternal(PropertyIdentifier.presentValue, BinaryPV.inactive);
             device.addObject(obj);
 
-            obj = new BACnetObject(device, ObjectType.forName("binary-value"), 500331, "elevator-group_mode_in_normal");
+            obj = new BACnetObject(device, ObjectType.forName("binary-value"), 3000047, "elevator-3000047");
             obj.writePropertyInternal(PropertyIdentifier.presentValue, BinaryPV.inactive);
             device.addObject(obj);
 
-            obj = new BACnetObject(device, ObjectType.forName("binary-value"), 500332, "elevator-power_in_normal");
-            obj.writePropertyInternal(PropertyIdentifier.presentValue, BinaryPV.active);
-            device.addObject(obj);
-
-            obj = new BACnetObject(device, ObjectType.forName("binary-value"), 500333, "elevator-car_door_closed");
+            obj = new BACnetObject(device, ObjectType.forName("binary-value"), 3000048, "elevator-3000048");
             obj.writePropertyInternal(PropertyIdentifier.presentValue, BinaryPV.inactive);
             device.addObject(obj);
 
-            obj = new BACnetObject(device, ObjectType.forName("binary-value"), 500334, "elevator-self_power_supply");
+            obj = new BACnetObject(device, ObjectType.forName("binary-value"), 3000049, "elevator-3000049");
             obj.writePropertyInternal(PropertyIdentifier.presentValue, BinaryPV.inactive);
             device.addObject(obj);
 
-            obj = new BACnetObject(device, ObjectType.forName("binary-value"), 500335, "elevator-stopped");
+            obj = new BACnetObject(device, ObjectType.forName("binary-value"), 3000050, "elevator-3000050");
             obj.writePropertyInternal(PropertyIdentifier.presentValue, BinaryPV.inactive);
             device.addObject(obj);
 
-            obj = new BACnetObject(device, ObjectType.forName("binary-value"), 500336, "elevator-opening");
+            obj = new BACnetObject(device, ObjectType.forName("binary-value"), 3000051, "elevator-3000051");
             obj.writePropertyInternal(PropertyIdentifier.presentValue, BinaryPV.inactive);
             device.addObject(obj);
 
-            obj = new BACnetObject(device, ObjectType.forName("binary-value"), 500337, "elevator-closing");
+            obj = new BACnetObject(device, ObjectType.forName("binary-value"), 3000052, "elevator-3000052");
+            obj.writePropertyInternal(PropertyIdentifier.presentValue, BinaryPV.inactive);
+            device.addObject(obj);
+
+            obj = new BACnetObject(device, ObjectType.forName("binary-value"), 3000053, "elevator-3000053");
+            obj.writePropertyInternal(PropertyIdentifier.presentValue, BinaryPV.inactive);
+            device.addObject(obj);
+
+            obj = new BACnetObject(device, ObjectType.forName("binary-value"), 3000054, "elevator-3000054");
+            obj.writePropertyInternal(PropertyIdentifier.presentValue, BinaryPV.inactive);
+            device.addObject(obj);
+
+            obj = new BACnetObject(device, ObjectType.forName("binary-value"), 3000055, "elevator-3000055");
+            obj.writePropertyInternal(PropertyIdentifier.presentValue, BinaryPV.inactive);
+            device.addObject(obj);
+
+            obj = new BACnetObject(device, ObjectType.forName("binary-value"), 3000056, "elevator-3000056");
+            obj.writePropertyInternal(PropertyIdentifier.presentValue, BinaryPV.inactive);
+            device.addObject(obj);
+
+            obj = new BACnetObject(device, ObjectType.forName("binary-value"), 3000057, "elevator-3000057");
+            obj.writePropertyInternal(PropertyIdentifier.presentValue, BinaryPV.inactive);
+            device.addObject(obj);
+
+            obj = new BACnetObject(device, ObjectType.forName("binary-value"), 3000058, "elevator-3000058");
+            obj.writePropertyInternal(PropertyIdentifier.presentValue, BinaryPV.inactive);
+            device.addObject(obj);
+
+            obj = new BACnetObject(device, ObjectType.forName("binary-value"), 3000059, "elevator-3000059");
+            obj.writePropertyInternal(PropertyIdentifier.presentValue, BinaryPV.inactive);
+            device.addObject(obj);
+
+            obj = new BACnetObject(device, ObjectType.forName("binary-value"), 3000060, "elevator-3000060");
+            obj.writePropertyInternal(PropertyIdentifier.presentValue, BinaryPV.inactive);
+            device.addObject(obj);
+
+            obj = new BACnetObject(device, ObjectType.forName("binary-value"), 3000061, "elevator-3000061");
+            obj.writePropertyInternal(PropertyIdentifier.presentValue, BinaryPV.inactive);
+            device.addObject(obj);
+
+            obj = new BACnetObject(device, ObjectType.forName("binary-value"), 3000062, "elevator-3000062");
+            obj.writePropertyInternal(PropertyIdentifier.presentValue, BinaryPV.inactive);
+            device.addObject(obj);
+
+            obj = new BACnetObject(device, ObjectType.forName("binary-value"), 3000063, "elevator-3000063");
+            obj.writePropertyInternal(PropertyIdentifier.presentValue, BinaryPV.inactive);
+            device.addObject(obj);
+
+            obj = new BACnetObject(device, ObjectType.forName("binary-value"), 3000064, "elevator-3000064");
+            obj.writePropertyInternal(PropertyIdentifier.presentValue, BinaryPV.inactive);
+            device.addObject(obj);
+
+            obj = new BACnetObject(device, ObjectType.forName("binary-value"), 3000065, "elevator-3000065");
+            obj.writePropertyInternal(PropertyIdentifier.presentValue, BinaryPV.inactive);
+            device.addObject(obj);
+
+            obj = new BACnetObject(device, ObjectType.forName("binary-value"), 3000066, "elevator-3000066");
+            obj.writePropertyInternal(PropertyIdentifier.presentValue, BinaryPV.inactive);
+            device.addObject(obj);
+
+            obj = new BACnetObject(device, ObjectType.forName("binary-value"), 3000067, "elevator-3000067");
+            obj.writePropertyInternal(PropertyIdentifier.presentValue, BinaryPV.inactive);
+            device.addObject(obj);
+
+            obj = new BACnetObject(device, ObjectType.forName("binary-value"), 3000068, "elevator-3000068");
+            obj.writePropertyInternal(PropertyIdentifier.presentValue, BinaryPV.inactive);
+            device.addObject(obj);
+
+            obj = new BACnetObject(device, ObjectType.forName("binary-value"), 3000069, "elevator-3000069");
+            obj.writePropertyInternal(PropertyIdentifier.presentValue, BinaryPV.inactive);
+            device.addObject(obj);
+
+            obj = new BACnetObject(device, ObjectType.forName("binary-value"), 3000070, "elevator-3000070");
+            obj.writePropertyInternal(PropertyIdentifier.presentValue, BinaryPV.inactive);
+            device.addObject(obj);
+
+            obj = new BACnetObject(device, ObjectType.forName("binary-value"), 3000071, "elevator-3000071");
+            obj.writePropertyInternal(PropertyIdentifier.presentValue, BinaryPV.inactive);
+            device.addObject(obj);
+
+            obj = new BACnetObject(device, ObjectType.forName("binary-value"), 3000072, "elevator-3000072");
+            obj.writePropertyInternal(PropertyIdentifier.presentValue, BinaryPV.inactive);
+            device.addObject(obj);
+
+            obj = new BACnetObject(device, ObjectType.forName("binary-value"), 3000073, "elevator-3000073");
+            obj.writePropertyInternal(PropertyIdentifier.presentValue, BinaryPV.inactive);
+            device.addObject(obj);
+
+            obj = new BACnetObject(device, ObjectType.forName("binary-value"), 3000074, "elevator-3000074");
+            obj.writePropertyInternal(PropertyIdentifier.presentValue, BinaryPV.inactive);
+            device.addObject(obj);
+
+            obj = new BACnetObject(device, ObjectType.forName("binary-value"), 3000075, "elevator-3000075");
+            obj.writePropertyInternal(PropertyIdentifier.presentValue, BinaryPV.inactive);
+            device.addObject(obj);
+
+            obj = new BACnetObject(device, ObjectType.forName("binary-value"), 3000076, "elevator-3000076");
+            obj.writePropertyInternal(PropertyIdentifier.presentValue, BinaryPV.inactive);
+            device.addObject(obj);
+
+            obj = new BACnetObject(device, ObjectType.forName("binary-value"), 3000077, "elevator-3000077");
+            obj.writePropertyInternal(PropertyIdentifier.presentValue, BinaryPV.inactive);
+            device.addObject(obj);
+
+            obj = new BACnetObject(device, ObjectType.forName("binary-value"), 3000078, "elevator-3000078");
+            obj.writePropertyInternal(PropertyIdentifier.presentValue, BinaryPV.inactive);
+            device.addObject(obj);
+
+            obj = new BACnetObject(device, ObjectType.forName("binary-value"), 3000079, "elevator-3000079");
+            obj.writePropertyInternal(PropertyIdentifier.presentValue, BinaryPV.inactive);
+            device.addObject(obj);
+
+            obj = new BACnetObject(device, ObjectType.forName("binary-value"), 3000080, "elevator-3000080");
+            obj.writePropertyInternal(PropertyIdentifier.presentValue, BinaryPV.inactive);
+            device.addObject(obj);
+
+            obj = new BACnetObject(device, ObjectType.forName("binary-value"), 3000081, "elevator-3000081");
             obj.writePropertyInternal(PropertyIdentifier.presentValue, BinaryPV.inactive);
             device.addObject(obj);
 
