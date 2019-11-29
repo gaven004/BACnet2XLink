@@ -21,7 +21,9 @@ public class MockDevice {
 
         Random random = new Random();
 
-        IpNetworkBuilder builder = new IpNetworkBuilder().withBroadcast("192.168.0.255", 24);
+        IpNetworkBuilder builder = new IpNetworkBuilder();
+        builder.withBroadcast("192.168.0.255", 24);
+        builder.withPort(47809);
         IpNetwork network = builder.build();
 
         try {

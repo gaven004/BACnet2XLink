@@ -45,13 +45,22 @@ public class DataAcquisitionHelper {
                 attributes.put(property.getName(), value);
             }
 
-            Event event = device.getSelfEvent(opr.getObjectIdentifier());
-            if (event != null) {
-                String value = pvs.get(opr).toString();
-                EventMessage message = event.getMessage(value);
-                if (message != null) {
-                    message.setType(event.getType());
-                    events.add(message);
+            if (device.getSelfEvents() != null) {
+                Event event = device.getSelfEvent(opr.getObjectIdentifier());
+                if (event != null) {
+                    String value = pvs.get(opr).toString();
+                    try {
+                        EventMessage message = event.getMessage(value);
+                        if (message != null) {
+                            EventMessage target = new EventMessage();
+                            target.setType(event.getType());
+                            target.setCode(message.getCode());
+                            target.setMessage(message.getMessage());
+                            events.add(target);
+                        }
+                    } catch (Exception ignore) {
+
+                    }
                 }
             }
         }

@@ -1,14 +1,13 @@
 package com.g.bacnet2xlink.definition;
 
-import java.util.List;
-import java.util.Map;
-
-import com.serotonin.bacnet4j.type.primitive.ObjectIdentifier;
-import lombok.Data;
-
 import com.g.bacnet2xlink.exception.UnknownEvent;
 import com.g.bacnet2xlink.exception.UnknownProperty;
 import com.g.bacnet2xlink.exception.UnknownService;
+import com.serotonin.bacnet4j.type.primitive.ObjectIdentifier;
+import lombok.Data;
+
+import java.util.List;
+import java.util.Map;
 
 /**
  * 设备，在概念上对应一个物理设备
@@ -114,6 +113,6 @@ public class Device {
     }
 
     public Event getSelfEvent(ObjectIdentifier oid) {
-        return selfEventMap.get(oid);
+        return selfEventMap == null ? null : selfEventMap.get(oid);
     }
 }
