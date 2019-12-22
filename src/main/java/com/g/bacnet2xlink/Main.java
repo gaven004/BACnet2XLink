@@ -77,6 +77,7 @@ public class Main {
         initXlinkCmMqttClient();
         loginXlink();
 
+        setReconnectHandler();
         setAttributeCallback();
         getAttributeCallback();
         serviceInvokeCallback();
@@ -167,13 +168,23 @@ public class Main {
         XlinkCmMqttClient xlinkMqttClient = builder.build(); // 构造XlinkMqttBuilderParams实例
 
         // 建立连接及认证
-        try {
-            xlinkMqttClient.start();
-            context.setXlinkCmMqttClient(xlinkMqttClient);
-            log.info("建立Xagent客户端成功");
-        } catch (Exception e) {
-            context.setXlinkCmMqttClient(null);
-            log.error(String.format("建立Xagent客户端失败"), e);
+        boolean init = false;
+
+        while (!init) {
+            try {
+                xlinkMqttClient.start();
+                context.setXlinkCmMqttClient(xlinkMqttClient);
+                init = true;
+                log.info("建立Xagent客户端成功");
+            } catch (Exception e) {
+                context.setXlinkCmMqttClient(null);
+                log.error(String.format("建立Xagent客户端失败"), e);
+                log.warn("1分钟后，重启Xagent客户端...");
+                try {
+                    Thread.sleep(60000);
+                } catch (InterruptedException ex) {
+                }
+            }
         }
     }
 
@@ -237,6 +248,21 @@ public class Main {
 
                 //通过方法返回值进行应答，如方法返回值null，则不会应答。
                 return response;
+            });
+        }
+    }
+
+    /**
+     * SDK与云端断开并重连时，回调方法设置
+     */
+    private static void setReconnectHandler() {
+        log.info("设置SDK与云端断开并重连时回调方法");
+        XlinkCmMqttClient xlinkMqttClient = context.getXlinkCmMqttClient();
+
+        if (xlinkMqttClient != null) {
+            xlinkMqttClient.setReconnectHandler(() -> {
+                log.warn("SDK与云端重连！！！");
+                loginXlink();
             });
         }
     }
